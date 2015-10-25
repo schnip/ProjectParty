@@ -1,5 +1,5 @@
 // DONE Replace with your usernames!
-#define printusers() printf("Program by schnipde+shishok\n");
+#define printusers() printf("Program by schnipde+kingmj1+browdess\n");
 
 #define _CRT_SECURE_NO_WARNINGS
 #define RESOLUTION 512
