@@ -237,6 +237,7 @@ private:
 
 	void setupShader()
 	{
+		
 		char const * vertPath = "resources/reflectance.vert";
 		char const * fragPath = "resources/reflectance.frag";
 		shaderProg[0] = ShaderManager::shaderFromFile(&vertPath, &fragPath, 1, 1);
@@ -248,6 +249,14 @@ private:
 		char const * shdVPath = "resources/shadowMap.vert";
 		char const * shdFPath = "resources/shadowMap.frag";
 		shaderProg[2] = ShaderManager::shaderFromFile(&shdVPath, &shdFPath, 1, 1);
+
+		/*
+		char const * vertPath = "resources/simple.vert";
+		char const * fragPath = "resources/simple.frag";
+		shaderProg[0] = ShaderManager::shaderFromFile(&vertPath, &fragPath, 1, 1);
+		shaderProg[1] = ShaderManager::shaderFromFile(&vertPath, &fragPath, 1, 1);
+		shaderProg[2] = ShaderManager::shaderFromFile(&vertPath, &fragPath, 1, 1);*/
+
 
 		checkGLError("shader");
 	}
@@ -334,8 +343,8 @@ private:
 		glm::mat4 Lr = state.getLightRotate();
 		glm::mat4 Lv = state.getLightViewMatrix();
 		glm::mat4 Lp;
-		Lp = glm::perspective(1.0f, fov, _near, _far);
-		//Lp = glm::ortho(-15.0f, 15.0f, -15.0f, 15.0f, 0.0f, 50.0f);
+		//Lp = glm::perspective(1.0f, fov, _near, _far);
+		Lp = glm::ortho(-15.0f, 15.0f, -15.0f, 15.0f, 0.0f, 50.0f);
 
 		//hacky light source size change
 		GLfloat maxDis = state.getModel().getDimension()[2] * 3;

@@ -57,6 +57,9 @@ vec4 phong() {
 
 void main()
 {
+	fragColor = smoothColor;
+	return;
+
 	if(shadingMode == 0)
 		fragColor = smoothColor;
 	else if (shadingMode == 1)
