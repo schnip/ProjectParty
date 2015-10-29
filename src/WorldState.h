@@ -73,10 +73,10 @@ public:
 		lightIntensity = glm::vec3(1,1,1);
 		
 		lightRotate = glm::mat4(1);
-		lightIncrement = glm::rotate(glm::mat4(1), -0.05f, glm::vec3(0,1,0));
+		lightIncrement = glm::rotate(glm::mat4(1), -0.025f, glm::vec3(0,1,0));
 		
 		modelRotate = glm::mat4(1);
-		modelIncrement = glm::rotate(glm::mat4(1), 0.02f, glm::vec3(0,1,0));
+		modelIncrement = glm::rotate(glm::mat4(1), .01f, glm::vec3(0,1,0));
 		modelTranslate = glm::translate(glm::mat4(1), -model.getCentroid());
 		
 		lightRotating = false;

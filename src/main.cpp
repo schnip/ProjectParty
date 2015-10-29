@@ -3,7 +3,7 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 #define RESOLUTION 512
-#define TARGET_FPS 30                // controls spin update rate
+#define TARGET_FPS 60                // controls spin update rate
 #define TIME_BETWEEN_UPDATES 0.015   // seconds between motion updates
 #define PRINT_FPS_INTERVAL 10.0f
 
@@ -171,7 +171,7 @@ private:
 #else
 		sf::ContextSettings settings(32, 0, 0, 3, 3, sf::ContextSettings::Core);
 #endif
-		window = new sf::Window(mode, "SFML application", sf::Style::Default, settings);
+		window = new sf::Window(mode, "ProjectParty", sf::Style::Default, settings);
 		
 #ifdef __APPLE__
 		dup2(oldFD, 2); // Redirect back
