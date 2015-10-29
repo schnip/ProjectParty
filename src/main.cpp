@@ -1,9 +1,9 @@
-// DONE Replace with your usernames!
-#define printusers() printf("Program by schnipde+kingmj1+browdess\n");
+//TODO Replace with your usernames!
+#define printusers() printf("Program by USER1+USER2\n");
 
 #define _CRT_SECURE_NO_WARNINGS
 #define RESOLUTION 512
-#define TARGET_FPS 30 //FTFY                // controls spin update rate
+#define TARGET_FPS 30                // controls spin update rate
 #define TIME_BETWEEN_UPDATES 0.015   // seconds between motion updates
 #define PRINT_FPS_INTERVAL 10.0f
 
@@ -40,8 +40,11 @@ public:
 	{
 		getWindowContext();
 
-		WorldState state;
+		state.currentRes[0] = RESOLUTION;
+		state.currentRes[1] = RESOLUTION;
 		render.init(state);
+		resize(window->getSize().x, window->getSize().y);
+		render.buildRenderBuffers(window->getSize().x, window->getSize().y);
 		
 		previousPos = glm::vec2(0);
 		buttonDown[0]=false;
@@ -55,7 +58,7 @@ public:
 		
 		while (state.isRunning())
 		{			
-			App->setActive();
+			window->setActive();
 			float currentTime = c.getElapsedTime().asSeconds();
 			float sinceLastFrame = currentTime - lastFrame;
 			float sleepTime = targetFrameTime - sinceLastFrame;
@@ -65,23 +68,24 @@ public:
 			currentTime = c.getElapsedTime().asSeconds();
 			lastFrame = currentTime;
 			float sinceLastPrint = currentTime - lastPrint;
-            
+			
 			handleEvents(state, render);
 			state.timeStep(currentTime);
-            
+			
 			if(sinceLastPrint > PRINT_FPS_INTERVAL) {
 				lastPrint = currentTime;
 				state.printFPS();
 			}
-            
+			
 			render.display(state);
-			App->display();
+			window->display();
 		}
 	}
 	
 private:
-	sf::Window * App;
+	sf::Window * window;
 	RenderEngine render;
+	WorldState state;
 	
 	sf::Clock timer;
 	float lastUpdate;
@@ -93,24 +97,62 @@ private:
 	{
 		sf::Event event;
 		
-		while (App->pollEvent(event))
+		while (window->pollEvent(event))
 		{
 			if (event.type == sf::Event::Closed)
 				state.setRunning(false);
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape))
 				state.setRunning(false);
 			
-            if((event.type == sf::Event::TextEntered) && (event.text.unicode == 'q'))
-                state.setShadingMode(0);
-            if((event.type == sf::Event::TextEntered) && (event.text.unicode == 'w'))
-                state.setShadingMode(1);
-            if((event.type == sf::Event::TextEntered) && (event.text.unicode == 'e'))
-                state.setShadingMode(2);
 			if((event.type == sf::Event::TextEntered) && (event.text.unicode == 'r'))
-                state.toggleModelRotate();
+				state.toggleModelRotate();
 			if((event.type == sf::Event::TextEntered) && (event.text.unicode == 't'))
-                state.toggleLightRotate();
+				state.toggleLightRotate();
+			
+			if(event.type == sf::Event::Resized) {
+				resize(event.size.width, event.size.height);
+			}
+
+			if(event.type == sf::Event::MouseButtonPressed)
+			{
+				state.lastClickPos[0] = event.mouseButton.x;
+				state.lastClickPos[1] = (state.currentRes[1]-event.mouseButton.y);
+				state.lastFrameDragPos[0] = event.mouseButton.x;
+				state.lastFrameDragPos[1] = (state.currentRes[1]-event.mouseButton.y);
+				state.mouseButtonDown = true;
+			}
+
+			if(event.type == sf::Event::MouseButtonReleased)
+				state.mouseButtonDown = false;
+
+			if(event.type == sf::Event::MouseMoved && state.mouseButtonDown)
+			{
+				state.cursorDragAmount[0] += state.lastFrameDragPos[0] - event.mouseMove.x;
+				state.cursorDragAmount[1] += state.lastFrameDragPos[1] - (state.currentRes[1]-event.mouseMove.y);
+				state.lastFrameDragPos[0] = event.mouseMove.x;
+				state.lastFrameDragPos[1] = (state.currentRes[1]-event.mouseMove.y);
+			}
+
+			if(event.type == sf::Event::MouseWheelMoved)
+			{
+				state.zoomCamera(event.mouseWheel.delta);
+				state.cursorScrollAmount += event.mouseWheel.delta;
+			}
+
+			if(event.type == sf::Event::MouseMoved)
+			{
+				state.cursorAbsolutePos[0] = event.mouseMove.x;
+				state.cursorAbsolutePos[1] = (state.currentRes[1]-event.mouseMove.y);
+			}
+
 		}
+	}
+
+	void resize(size_t x, size_t y)
+	{
+		render.buildRenderBuffers(x, y);
+		state.currentRes[0] = x;
+		state.currentRes[1] = y;
 	}
 	
 	void getWindowContext()
@@ -129,7 +171,7 @@ private:
 #else
 		sf::ContextSettings settings(32, 0, 0, 3, 3, sf::ContextSettings::Core);
 #endif
-		App = new sf::Window(mode, "SFML application", sf::Style::Default, settings);
+		window = new sf::Window(mode, "SFML application", sf::Style::Default, settings);
 		
 #ifdef __APPLE__
 		dup2(oldFD, 2); // Redirect back
@@ -143,5 +185,5 @@ int main()
 	printusers();
 	Program4 prog;
 	
-    return EXIT_SUCCESS;
+	return EXIT_SUCCESS;
 }

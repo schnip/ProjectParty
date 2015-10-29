@@ -19,7 +19,9 @@ public:
 	
 	static GLuint shaderFromString(char const * const * vertShaderSource, char const * const * fragShaderSource, int const vertShaderCount, int const fragShaderCount)
 	{
-		return createShaderProgram(vertShaderSource, fragShaderSource, vertShaderCount, fragShaderCount);
+		char const path[] = "no path";
+		char const * const p = (char const * const) &path;
+		return createShaderProgram(vertShaderSource, fragShaderSource, &p, &p, vertShaderCount, fragShaderCount);
 	}
 	
 private:
@@ -38,18 +40,10 @@ private:
 		for(int i=0; i<fragShaderCount; i++)
 			newFragPath[i] = (char*) malloc(sizeof(char) * MAX_PATH_SIZE);
 		
-#ifdef USING_XCODE3
-		//need to reach outside the app bundle to get the shaders
-		for(int i=0; i<vertShaderCount; i++)
-			snprintf(newVertPath[i], MAX_PATH_SIZE, "../../%s", vertShaderPath[i]);
-		for(int i=0; i<fragShaderCount; i++)
-			snprintf(newFragPath[i], MAX_PATH_SIZE, "../../%s", fragShaderPath[i]);
-#else
 		for(int i=0; i<vertShaderCount; i++)
 			snprintf(newVertPath[i], MAX_PATH_SIZE, "%s", vertShaderPath[i]);
 		for(int i=0; i<fragShaderCount; i++)
 			snprintf(newFragPath[i], MAX_PATH_SIZE, "%s", fragShaderPath[i]);
-#endif
 		
 		if(vertShaderCount > MAX_SHADERS || fragShaderCount > MAX_SHADERS)
 		{
@@ -67,7 +61,7 @@ private:
 			fragSource[i] = readFile( newFragPath[i] );
 		
 		//create shaders
-		GLuint prog = createShaderProgram(vertSource, fragSource, vertShaderCount, fragShaderCount);
+		GLuint prog = createShaderProgram(vertSource, fragSource, vertShaderPath, fragShaderPath, vertShaderCount, fragShaderCount);
 		
 		for(int i=0; i<vertShaderCount; i++)
 			free( (void*) vertSource[i]);
@@ -77,7 +71,7 @@ private:
 		return prog;
 	}
 	
-	static GLuint createShaderProgram(char const * const * vertSource, char const * const * fragSource, int const vertShaderCount, int const fragShaderCount)
+	static GLuint createShaderProgram(char const * const * vertSource, char const * const * fragSource, char const * const * vertShaderPath, char const * const * fragShaderPath, int const vertShaderCount, int const fragShaderCount)
 	{
 #ifndef MAX_SHADERS
 #define MAX_SHADERS 10
@@ -95,21 +89,21 @@ private:
 		glShaderSource(fragShader, fragShaderCount, (char const **)fragSource, NULL);
 		
 		glCompileShader(vertShader);
-		printShaderInfoLog(vertShader, vertShaderCount);
+		printShaderInfoLog(vertShader, vertShaderPath, vertShaderCount);
 		glCompileShader(fragShader);
-		printShaderInfoLog(fragShader, fragShaderCount);
+		printShaderInfoLog(fragShader, fragShaderPath, fragShaderCount);
 		
 		GLuint prog = glCreateProgram();
 		glAttachShader(prog, vertShader);
 		glAttachShader(prog, fragShader);
 		
 		glLinkProgram(prog);
-		printProgramInfoLog(prog, vertShaderCount, fragShaderCount);
+		printProgramInfoLog(prog, vertShaderPath, fragShaderPath, vertShaderCount, fragShaderCount);
 		
 		return prog;
 	}
 	
-	static void printShaderInfoLog(GLuint obj, int const shaderCount)
+	static void printShaderInfoLog(GLuint obj, char const * const * shaderPath, int const shaderCount)
 	{
 		int infologLength = 0;
 		int charsWritten  = 0;
@@ -117,36 +111,52 @@ private:
 		
 		glGetShaderiv(obj, GL_INFO_LOG_LENGTH,&infologLength);
 		
-		if (infologLength > 0)
+		if (infologLength > 1)
 		{
-			printf("Shader info log:\n");
+			printf("Shader info log for:\n");
+			for (size_t i=0; i<shaderCount; i++)
+				printf("%s\n", shaderPath[i]);
 
 			infoLog = (char *)malloc(infologLength);
 			glGetShaderInfoLog(obj, infologLength, &charsWritten, infoLog);
 			printf("%s\n",infoLog);
 			free(infoLog);
+			
+			GLint success;
+			glGetShaderiv(obj, GL_COMPILE_STATUS, &success);
+			if(success != GL_TRUE)
+				exit(4);
 		}
 		else
 		{
 		}
 	}
 	
-	static void printProgramInfoLog(GLuint obj, int const vertShaderCount, int const fragShaderCount)
+	static void printProgramInfoLog(GLuint obj, char const * const * vertShaderPath, char const * const * fragShaderPath, int const vertShaderCount, int const fragShaderCount)
 	{
 		int infologLength = 0;
 		int charsWritten  = 0;
 		char *infoLog;
 		
-		glGetProgramiv(obj, GL_INFO_LOG_LENGTH,&infologLength);
+		glGetProgramiv(obj, GL_INFO_LOG_LENGTH, &infologLength);
 		
-		if (infologLength > 0)
+		if (infologLength > 1)
 		{
-			printf("Shader program info log:\n");
+			printf("Shader program info log for:\n");
+			for (size_t i = 0; i<vertShaderCount; i++)
+				printf("%s\n", vertShaderPath[i]);
+			for (size_t i = 0; i<fragShaderCount; i++)
+				printf("%s\n", fragShaderPath[i]);
 
 			infoLog = (char *)malloc(infologLength);
 			glGetProgramInfoLog(obj, infologLength, &charsWritten, infoLog);
 			printf("%s\n",infoLog);
 			free(infoLog);
+			
+			GLint success;
+			glGetProgramiv(obj, GL_LINK_STATUS, &success);
+			if(success != GL_TRUE)
+				exit(4);
 		}
 	}
 	
