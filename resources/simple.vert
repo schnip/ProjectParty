@@ -77,9 +77,6 @@ void main()
 {
 	//TODO add gouraud and phong shading support
 	smoothPos = pos;
-
-	smoothColor = justColor();
-	return;
 	
 	vec4 pos = vec4(pos, 1);
 	gl_Position = P*M*pos;
