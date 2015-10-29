@@ -17,8 +17,8 @@ public:
 		//loader.load("resources/cube.obj");
 		//loader.load("resources/sphere.obj");
 		//loader.load("resources/teapot.obj");
-		loader.load("resources/teapot_flake_floor.obj");
-		//loader.load("resources/notflat.obj");
+		//loader.load("resources/teapot_flake_floor.obj");
+		loader.load("resources/flat.obj");
 		
 		for(size_t i=0; i<loader.vertexCount; i++) {
 			positions.push_back(loader.vertexList[i]->e[0]);
