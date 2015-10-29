@@ -1,0 +1,12 @@
+# Blender v2.69 (sub 0) OBJ File: ''
+# www.blender.org
+mtllib notflat.mtl
+o Plane
+v -6.723326 7.106538 0.982589
+v -7.001782 -6.530890 -1.894111
+v 6.993822 6.613262 1.993217
+v 6.731285 -6.982522 -1.081695
+usemtl None
+s off
+f 2 1 3
+f 4 2 3
