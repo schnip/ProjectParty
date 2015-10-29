@@ -42,6 +42,7 @@ public:
 
 		state.currentRes[0] = RESOLUTION;
 		state.currentRes[1] = RESOLUTION;
+		state.setSize(RESOLUTION, RESOLUTION);
 		render.init(state);
 		resize(window->getSize().x, window->getSize().y);
 		render.buildRenderBuffers(window->getSize().x, window->getSize().y);
