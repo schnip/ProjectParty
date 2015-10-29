@@ -1,6 +1,7 @@
 #ifndef __WORLDSTATE_H
 #define __WORLDSTATE_H
 #include "Model.h"
+#include "TrackBall.h"
 
 #define NUM_TRACKED_FRAMES 10
 
@@ -10,6 +11,7 @@ private:
 	float frameTimes[NUM_TRACKED_FRAMES];
 	bool running;
 	Model model;
+	TrackBall trackball;
 
 public:
 	
@@ -173,6 +175,11 @@ public:
 		float d = pow(0.95, delta);
 		printf("%f\n", d);
 		cameraPos = cameraPos * d;
+	}
+
+	void setSize(unsigned int x, unsigned int y)
+	{
+		trackball.setSize(x, y);
 	}
 };
 

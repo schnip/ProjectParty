@@ -5,7 +5,7 @@
 
 #define NUM_TRACKED_FRAMES 10
 
-class WorldState
+class UserState
 {
 private:
 	float frameTimes[NUM_TRACKED_FRAMES];
@@ -32,7 +32,7 @@ private:
 	}
 
 public:
-	WorldState()
+	UserState()
 	{
 		for(size_t i=0; i<NUM_TRACKED_FRAMES; i++)
 			frameTimes[i] = 0.0f;
