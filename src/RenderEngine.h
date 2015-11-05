@@ -10,10 +10,6 @@
 #define TEX_TYPE GL_TEXTURE_2D
 //#define TEX_TYPE GL_TEXTURE_RECTANGLE
 
-#ifndef NUM_MODELS
-#define NUM_MODELS 5
-#endif
-
 class RenderEngine
 {
 public:
