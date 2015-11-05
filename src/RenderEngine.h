@@ -45,9 +45,7 @@ public:
 		//glEnable(GL_CULL_FACE);
 		
 		setupShader();
-		for(size_t i = 0; i<NUM_MODELS; i++) {
-			setupBuffers(state.getModel(i));
-		}
+		setupBuffers(state);
 	}
 
 	void display(WorldState & state)
@@ -267,7 +265,7 @@ private:
 		checkGLError("shader");
 	}
 
-	void setupBuffers(Model & model)
+	void setupBuffers(WorldState & state)
 	{
 		glGenVertexArrays(1, &vertexArray);
 		glBindVertexArray(vertexArray);
