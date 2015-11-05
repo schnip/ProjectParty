@@ -267,6 +267,7 @@ private:
 
 	void setupBuffers(WorldState & state)
 	{
+		Model model = state.getModel(0);
 		glGenVertexArrays(1, &vertexArray);
 		glBindVertexArray(vertexArray);
 		
