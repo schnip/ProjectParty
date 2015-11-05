@@ -5,12 +5,16 @@
 
 #define NUM_TRACKED_FRAMES 10
 
+#ifndef NUM_MODELS
+#define NUM_MODELS 5
+#endif
+
 class WorldState
 {
 private:
 	float frameTimes[NUM_TRACKED_FRAMES];
 	bool running;
-	Model model;
+	Model model[NUM_MODELS];
 	TrackBall trackball;
 
 public:
@@ -57,13 +61,16 @@ public:
 			frameTimes[i] = 0.0f;
 		
 		running = true;
-		model = Model();
-		model.init();
+
+		for (size_t i=0;i<NUM_MODELS; i++) {
+			model[i] = Model();
+			model[i].init();
+		}
 		
-		glm::vec3 center = model.getCentroid();
-		glm::vec3 max = model.getMaxBound();
-		glm::vec3 min = model.getMinBound();
-		glm::vec3 dim = model.getDimension();
+		glm::vec3 center = model[0].getCentroid();
+		glm::vec3 max = model[0].getMaxBound();
+		glm::vec3 min = model[0].getMinBound();
+		glm::vec3 dim = model[0].getDimension();
 		glm::vec3 toMax = max-center;
 		printf("model loaded\n");
 		printf("min [%.2f %.2f %.2f]\n", min[0], min[1], min[2]);
@@ -85,12 +92,12 @@ public:
 		
 		modelRotate = glm::mat4(1);
 		modelIncrement = glm::rotate(glm::mat4(1), .01f, glm::vec3(1,0,0));
-		modelTranslate = glm::translate(glm::mat4(1), -model.getCentroid());
+		modelTranslate = glm::translate(glm::mat4(1), -model[0].getCentroid());
 		
 		lightRotating = false;
 		modelRotating = false;
 
-		translateToOrigin = glm::translate(glm::mat4(1.0f), -model.getCentroid());
+		translateToOrigin = glm::translate(glm::mat4(1.0f), -model[0].getCentroid());
 		translateFromInput = glm::mat4(1.0f);
 		rotationFromInput = glm::mat4(1.0f);
 		currentModelTransform = translateToOrigin;
@@ -117,8 +124,8 @@ public:
 		printf("fps %f\n", fps);
 	}
 	
-	Model const & getModel() const
-	{ return model; }
+	Model const & getModel(int ref) const
+	{ return model[ref]; }
 	
 	void setRunning(bool r)
 	{ running = r; }
@@ -148,8 +155,8 @@ public:
 		this->currentTime = t;
 	}
 	
-	Model & getModel()
-	{ return model; }
+	Model & getModel(int ref)
+	{ return model[ref]; }
 	
 	glm::mat4 getModelTranslate() const
 	{ return modelTranslate; }

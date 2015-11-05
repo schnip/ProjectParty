@@ -10,6 +10,10 @@
 #define TEX_TYPE GL_TEXTURE_2D
 //#define TEX_TYPE GL_TEXTURE_RECTANGLE
 
+#ifndef NUM_MODELS
+#define NUM_MODELS 5
+#endif
+
 class RenderEngine
 {
 public:
@@ -45,7 +49,9 @@ public:
 		//glEnable(GL_CULL_FACE);
 		
 		setupShader();
-		setupBuffers(state.getModel());
+		for(size_t i = 0; i<NUM_MODELS; i++) {
+			setupBuffers(state.getModel(i));
+		}
 	}
 
 	void display(WorldState & state)
@@ -66,7 +72,9 @@ public:
 
 		//draw
 		glBindVertexArray(vertexArray);
-		glDrawElements(GL_TRIANGLES, state.getModel().getElements().size(), GL_UNSIGNED_INT, 0);
+		for(size_t i = 0; i<NUM_MODELS; i++) {
+			glDrawElements(GL_TRIANGLES, state.getModel(i).getElements().size(), GL_UNSIGNED_INT, 0);
+		}
 		checkGLError("light view");
 		
 		
@@ -100,7 +108,9 @@ public:
 		
 		//draw
 		glBindVertexArray(vertexArray);
-		glDrawElements(GL_TRIANGLES, state.getModel().getElements().size(), GL_UNSIGNED_INT, 0);
+		for(size_t i = 0; i<NUM_MODELS; i++) {
+			glDrawElements(GL_TRIANGLES, state.getModel(i).getElements().size(), GL_UNSIGNED_INT, 0);
+		}
 		
 		glBindVertexArray(0);
 		glUseProgram(0);
@@ -326,7 +336,8 @@ private:
 
 	void uploadUniforms(GLuint shaderId, WorldState const & state)
 	{
-		glm::vec3 dim = state.getModel().getDimension();
+		glm::vec3 dim = state.getModel(0).getDimension();
+
 		float maxDim = std::max(dim[0], std::max(dim[1], dim[2]));
 		_near = maxDim*0.1f;
 		_far  = maxDim*3.0f;
@@ -347,7 +358,7 @@ private:
 		Lp = glm::ortho(-15.0f, 15.0f, -15.0f, 15.0f, 0.0f, 50.0f);
 
 		//hacky light source size change
-		GLfloat maxDis = state.getModel().getDimension()[2] * 3;
+		GLfloat maxDis = state.getModel(0).getDimension()[2] * 3;
 		GLfloat distScale = 1.0f / (glm::length(Lr*lightPos - camPos) / maxDis);
 		glPointSize(glm::mix(1.0f, 10.0f, distScale));
 
