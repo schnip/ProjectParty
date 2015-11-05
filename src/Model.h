@@ -11,14 +11,18 @@ class Model
 public:
 	
 
-	void init()
+	void init(int i)
 	{
 		objLoader loader;
 		//loader.load("resources/cube.obj");
 		//loader.load("resources/sphere.obj");
 		//loader.load("resources/teapot.obj");
 		//loader.load("resources/teapot_flake_floor.obj");
-		loader.load("resources/flat.obj");
+		if (i > 0) {
+			loader.load("resources/flat.obj");
+		} else {
+			loader.load("resources/teapot.obj");
+		}
 		
 		for(size_t i=0; i<loader.vertexCount; i++) {
 			positions.push_back(loader.vertexList[i]->e[0]);

@@ -64,7 +64,7 @@ public:
 
 		for (size_t i=0;i<NUM_MODELS; i++) {
 			model[i] = Model();
-			model[i].init();
+			model[i].init(i);
 		}
 		
 		glm::vec3 center = model[0].getCentroid();
