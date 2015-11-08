@@ -1,5 +1,10 @@
 #version 330
 
+uniform vec4 Ka;
+uniform vec4 Kd;
+uniform vec4 Ks;
+uniform vec4 specAlpha;
+
 uniform mat4 P;   //projection matrix
 uniform mat4 C;   //camera matrix
 uniform mat4 M;   //modelview matrix: M = C * mR * mT
@@ -26,10 +31,9 @@ vec4 reflectance(in vec3 pos, in vec3 norm, in vec3 colorIn, in float visibility
 	vec4 n = normalize(vec4(norm,0));
 	vec4 c = vec4(0);
 	vec4 Li = vec4(1);
-	vec4 ka = vec4(0.1);
-	//vec4 kd = vec4(0.2, 0.2, 0.8, 1);
-	vec4 kd = smoothColor;
-	vec4 ks = vec4(1);
+	vec4 ka = Ka;
+	vec4 kd = Kd;
+	vec4 ks = Ks;
 
 	lp = C*Lr*lp;
 	p = M*p;
@@ -45,7 +49,7 @@ vec4 reflectance(in vec3 pos, in vec3 norm, in vec3 colorIn, in float visibility
 	float s = clamp(dot(v,r), 0, 1);
 	s = pow(s, alpha) * visibilityFactor;
 	
-	return ka*n + kd*d*Li + ks*s*Li;
+	return ka*Li + kd*d*Li + ks*s*Li;
 }
 
 float scaleToRange(float v, vec2 bounds) {
@@ -76,25 +80,23 @@ vec4 getShadowPoint()
 {
 	//TODO: adjust for the perspective divide and bias
 	vec4 shp = shadowPos;
-	shp = shp/shp.w;
-	shp.z = shp.z-getBias();
 	return shp;
 }
 
 float getVisibility()
 {
+	float visibilityFactor = 1.0;
 	vec4 shadowPoint = getShadowPoint();
 	
 	//TODO lookup the distance in the shapow map, get surface and occlusion distance
-	vec4 shadowTexel = texture(texId, shadowPoint.xy);
-	float surfaceDistance = shadowPoint.z;
-	float occlusionDistance = shadowTexel.z;
+	float surfaceDistance = 1.0;
+	float occlusionDistance = 1.0;
 	
 	float diff = occlusionDistance - surfaceDistance;
-	fragColor = redBlueMap(diff, vec3(-0.01, 0, 0.01));
+	fragColor = redBlueMap(diff, vec3(-0.1, 0, 0.1));
 	
 	if(diff < 0)
-		return 0.0;
+		return 0.3;
 	return 1.0;
 }
 

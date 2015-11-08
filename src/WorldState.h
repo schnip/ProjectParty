@@ -1,23 +1,19 @@
 #ifndef __WORLDSTATE_H
 #define __WORLDSTATE_H
 #include "Model.h"
-#include "TrackBall.h"
 
 #define NUM_TRACKED_FRAMES 10
-
-#ifndef NUM_MODELS
-#define NUM_MODELS 5
-#endif
 
 class WorldState
 {
 private:
 	float frameTimes[NUM_TRACKED_FRAMES];
 	bool running;
-	Model model[NUM_MODELS];
-	TrackBall trackball;
+	Model model;
 
 public:
+
+	Model model2;
 	
 	float currentTime;
 	
@@ -35,12 +31,6 @@ public:
 	glm::mat4 modelTranslate;
 	glm::mat4 cameraMatrix;
 	glm::mat4 lightView;
-
-	glm::mat4 translateToOrigin;
-	glm::mat4 translateFromInput;
-	glm::mat4 rotationFromInput;
-	glm::mat4 rotationSpinStep;
-	glm::mat4 currentModelTransform;
 	
 	bool lightRotating;
 	bool modelRotating;
@@ -56,21 +46,26 @@ public:
 
 public:
 	WorldState()
+	{ }
+
+	void init()
 	{
 		for(size_t i=0; i<NUM_TRACKED_FRAMES; i++)
 			frameTimes[i] = 0.0f;
 		
 		running = true;
+		model = Model();
+		model.init("resources/material_test.obj");
+		model.setupAttributeBuffers();
 
-		for (size_t i=0;i<NUM_MODELS; i++) {
-			model[i] = Model();
-			model[i].init(i);
-		}
+		model2 = Model();
+		model2.init("resources/teapot.obj");
+		model2.setupAttributeBuffers();
 		
-		glm::vec3 center = model[0].getCentroid();
-		glm::vec3 max = model[0].getMaxBound();
-		glm::vec3 min = model[0].getMinBound();
-		glm::vec3 dim = model[0].getDimension();
+		glm::vec3 center = model.getCentroid();
+		glm::vec3 max = model.getMaxBound();
+		glm::vec3 min = model.getMinBound();
+		glm::vec3 dim = model.getDimension();
 		glm::vec3 toMax = max-center;
 		printf("model loaded\n");
 		printf("min [%.2f %.2f %.2f]\n", min[0], min[1], min[2]);
@@ -84,23 +79,17 @@ public:
 		
 		lightPos = glm::vec4((center+(toMax*2.0f)), 1);
 		lightPos[1] = (center+(toMax*6.0f))[1];
-		//lightPos = glm::vec4(0,0,0,1); //new
 		lightIntensity = glm::vec3(1,1,1);
 		
 		lightRotate = glm::mat4(1);
-		lightIncrement = glm::rotate(glm::mat4(1), -0.025f, glm::vec3(0,1,0));
+		lightIncrement = glm::rotate(glm::mat4(1), -0.05f, glm::vec3(0,1,0));
 		
 		modelRotate = glm::mat4(1);
-		modelIncrement = glm::rotate(glm::mat4(1), .01f, glm::vec3(1,0,0));
-		modelTranslate = glm::translate(glm::mat4(1), -model[0].getCentroid());
+		modelIncrement = glm::rotate(glm::mat4(1), 0.02f, glm::vec3(0,1,0));
+		modelTranslate = glm::translate(glm::mat4(1), -model.getCentroid());
 		
 		lightRotating = false;
 		modelRotating = false;
-
-		translateToOrigin = glm::translate(glm::mat4(1.0f), -model[0].getCentroid());
-		translateFromInput = glm::mat4(1.0f);
-		rotationFromInput = glm::mat4(1.0f);
-		currentModelTransform = translateToOrigin;
 	}
 	
 	void updateFrameTime(float timeAsSeconds)
@@ -124,8 +113,8 @@ public:
 		printf("fps %f\n", fps);
 	}
 	
-	Model const & getModel(int ref) const
-	{ return model[ref]; }
+	Model const & getModel() const
+	{ return model; }
 	
 	void setRunning(bool r)
 	{ running = r; }
@@ -155,8 +144,8 @@ public:
 		this->currentTime = t;
 	}
 	
-	Model & getModel(int ref)
-	{ return model[ref]; }
+	Model & getModel()
+	{ return model; }
 	
 	glm::mat4 getModelTranslate() const
 	{ return modelTranslate; }
@@ -193,39 +182,6 @@ public:
 		float d = pow(0.95, delta);
 		printf("%f\n", d);
 		cameraPos = cameraPos * d;
-	}
-
-	void setSize(unsigned int x, unsigned int y)
-	{
-		trackball.setSize(x, y);
-	}
-	void updateRotate(glm::ivec2 & oldPos, glm::ivec2 & newPos)
-	{
-		float phi;
-		glm::vec3 axis;
-		#define ROT_SENSITIVITY 2.0f // might be helpful to scale rotation angle
-		
-		//computes the appropriate rotation data and stores in phi and axis
-		trackball.getRotation(phi, axis, oldPos, newPos);
-		glm::vec4 tempaxis = glm::vec4(axis, 1);
-		//tempaxis=rotationFromInput*tempaxis;
-		rotationFromInput = glm::rotate(glm::mat4(1.0f), ROT_SENSITIVITY*phi, glm::vec3(tempaxis)) * rotationFromInput;
-		rotationSpinStep = glm::rotate(glm::mat4(1.0f), phi, glm::vec3(tempaxis));
-	}
-	
-	void updateXYTranslate(glm::ivec2 & oldPos, glm::ivec2 & newPos)
-	{
-		#define XY_SENSITIVITY 0.01f // might be helpful to scale translations in x and y
-		translateFromInput = glm::translate(translateFromInput, glm::vec3(XY_SENSITIVITY*(newPos[0]-oldPos[0]),XY_SENSITIVITY*(oldPos[1]-newPos[1]),0));
-		//glm::mat4 translateFromInput = glm::translate(translateFromInput, glm::vec3(4,6,0));
-		
-
-	}
-	
-	void updateZTranslate(glm::ivec2 & oldPos, glm::ivec2 & newPos)
-	{
-		#define Z_SENSITIVITY 0.02f // might be helpful to scale translations in z
-		translateFromInput =  translateFromInput * glm::translate(glm::mat4(1.0f), glm::vec3(0,0,Z_SENSITIVITY*(oldPos[1]-newPos[1])));
 	}
 };
 

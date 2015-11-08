@@ -1,5 +1,10 @@
 #version 330
 
+uniform vec4 Ka;
+uniform vec4 Kd;
+uniform vec4 Ks;
+uniform vec4 specAlpha;
+
 uniform mat4 P;  //projection matrix
 uniform mat4 Lp;  //light projection matrix
 uniform mat4 mT;
@@ -29,10 +34,7 @@ vec4 positionInLightView(vec3 pos)
 	
 	//TODO: move vertex, put in light view
 	
-	vec4 vertPos = mR * mT * vec4(pos, 1);
-	vertPos = offset * Lp * Lv * vertPos;
-
-	return vertPos;
+	return vec4(pos, 1);
 }
 
 void main()

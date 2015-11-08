@@ -3,7 +3,7 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 #define RESOLUTION 512
-#define TARGET_FPS 60                // controls spin update rate
+#define TARGET_FPS 30                // controls spin update rate
 #define TIME_BETWEEN_UPDATES 0.015   // seconds between motion updates
 #define PRINT_FPS_INTERVAL 10.0f
 
@@ -28,6 +28,8 @@
 //#define _USE_MATH_DEFINES
 //#include <math.h>
 #define PI 3.14159f
+
+#include "GLLoader.h"
 #include "ShaderManager.h"
 #include "GLHelper.h"
 #include "RenderEngine.h"
@@ -39,13 +41,22 @@ public:
 	Program4()
 	{
 		getWindowContext();
+		
+		initLoader();
+		float ver = initLoader();
+		if( ver < 1.0f ) {
+			printf("OpenGL is not supported.\n");
+			exit(1);
+		}
+		printf("OpenGL version %.1f is supported.\n", ver);
+
+		state.init();
 
 		state.currentRes[0] = RESOLUTION;
 		state.currentRes[1] = RESOLUTION;
-		state.setSize(RESOLUTION, RESOLUTION);
 		render.init(state);
 		resize(window->getSize().x, window->getSize().y);
-		render.buildRenderBuffers(window->getSize().x, window->getSize().y);
+		//render.buildRenderBuffers(window->getSize().x, window->getSize().y);
 		
 		previousPos = glm::vec2(0);
 		buttonDown[0]=false;
@@ -151,7 +162,7 @@ private:
 
 	void resize(size_t x, size_t y)
 	{
-		render.buildRenderBuffers(x, y);
+		//render.buildRenderBuffers(x, y);
 		state.currentRes[0] = x;
 		state.currentRes[1] = y;
 	}
@@ -172,7 +183,7 @@ private:
 #else
 		sf::ContextSettings settings(32, 0, 0, 3, 3, sf::ContextSettings::Core);
 #endif
-		window = new sf::Window(mode, "ProjectParty", sf::Style::Default, settings);
+		window = new sf::Window(mode, "SFML application", sf::Style::Default, settings);
 		
 #ifdef __APPLE__
 		dup2(oldFD, 2); // Redirect back

@@ -30,7 +30,13 @@ private:
 		#ifndef MAX_SHADERS
 		#define MAX_SHADERS 10
 		#endif
-		
+
+		if(vertShaderCount > MAX_SHADERS || fragShaderCount > MAX_SHADERS)
+		{
+			printf("This function can only build shaders with %i files. Exiting.\n", MAX_SHADERS);
+			exit(1);
+		}
+
 		char ** newVertPath = (char**) malloc(sizeof(char*) * vertShaderCount);
 		char ** newFragPath = (char**) malloc(sizeof(char*) * fragShaderCount);
 		
@@ -44,12 +50,6 @@ private:
 			snprintf(newVertPath[i], MAX_PATH_SIZE, "%s", vertShaderPath[i]);
 		for(int i=0; i<fragShaderCount; i++)
 			snprintf(newFragPath[i], MAX_PATH_SIZE, "%s", fragShaderPath[i]);
-		
-		if(vertShaderCount > MAX_SHADERS || fragShaderCount > MAX_SHADERS)
-		{
-			printf("This function can only build shaders with %i files. Exiting.\n", MAX_SHADERS);
-			exit(1);
-		}
 		
 		char * vertSource[MAX_SHADERS];
 		char * fragSource[MAX_SHADERS];
@@ -67,6 +67,11 @@ private:
 			free( (void*) vertSource[i]);
 		for(int i=0; i<fragShaderCount; i++)
 			free( (void*) fragSource[i]);
+
+		for(int i=0; i<vertShaderCount; i++)
+			free(newVertPath[i]);
+		for(int i=0; i<fragShaderCount; i++)
+			free(newFragPath[i]);
 		
 		return prog;
 	}

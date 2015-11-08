@@ -34,6 +34,7 @@
     <ClInclude Include="src\glew\glxew.h" />
     <ClInclude Include="src\glew\wglew.h" />
     <ClInclude Include="src\GLHelper.h" />
+    <ClInclude Include="src\GLLoader.h" />
     <ClInclude Include="src\Model.h" />
     <ClInclude Include="src\objload\list.h" />
     <ClInclude Include="src\objload\objLoader.h" />
@@ -45,10 +46,6 @@
     <ClInclude Include="src\WorldState.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="resources\lightPos.frag" />
-    <None Include="resources\lightPos.vert" />
-    <None Include="resources\simple.frag" />
-    <None Include="resources\simple.vert" />
     <None Include="resources\texture.frag" />
     <None Include="resources\texture.vert" />
   </ItemGroup>
@@ -207,15 +204,16 @@ xcopy /Y $(SolutionDir)..\Shaders $(SolutionDir)\Shaders\
       <AdditionalDependencies>sfml-window.lib;sfml-system.lib;opengl32.lib;winmm.lib;gdi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
-      <Command>mkdir $(SolutionDir)\Shaders
-xcopy /Y $(SolutionDir)..\Shaders $(SolutionDir)\Shaders\
-</Command>
+      <Command>
+      </Command>
     </CustomBuildStep>
     <CustomBuildStep>
-      <Message>Copying shaders...</Message>
+      <Message>
+      </Message>
     </CustomBuildStep>
     <CustomBuildStep>
-      <Outputs>$(SolutionDir)\Shaders\*.frag;$(SolutionDir)\Shaders\*.vert;%(Outputs)</Outputs>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -59,6 +59,9 @@
     <ClInclude Include="src\objload\string_extra.h">
       <Filter>loader</Filter>
     </ClInclude>
+    <ClInclude Include="src\GLLoader.h">
+      <Filter>helpers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="helpers">
@@ -72,18 +75,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="resources\lightPos.frag">
-      <Filter>resources</Filter>
-    </None>
-    <None Include="resources\lightPos.vert">
-      <Filter>resources</Filter>
-    </None>
-    <None Include="resources\simple.frag">
-      <Filter>resources</Filter>
-    </None>
-    <None Include="resources\simple.vert">
-      <Filter>resources</Filter>
-    </None>
     <None Include="resources\texture.frag">
       <Filter>resources</Filter>
     </None>
