@@ -104,6 +104,6 @@ void main()
 {
 	float visibilityFactor = getVisibility();
 	
-	fragColor = reflectance(smoothPos, smoothNorm, smoothColor.xyz, visibilityFactor);
+	fragColor = reflectance(smoothPos, smoothNorm, smoothColor.xyz, visibilityFactor) + vec4(.1,0,.1,0);
 }
 
