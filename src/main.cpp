@@ -70,7 +70,7 @@ public:
 		float lastPrint = lastFrame;
 		float targetFrameTime = 1.0f/(float)TARGET_FPS;
 		
-		if (!currentSong.openFromFile("Resources/LoveStory.ogg")) {
+		if (!currentSong.openFromFile("resources/LoveStory.ogg")) {
 			printf("Failed to load music\n");
 		}
 		currentSong.setLoop(TRUE);
@@ -131,7 +131,7 @@ private:
 			//Music!
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::A)) {
 				currentSong.stop();
-				if (!currentSong.openFromFile("Resources/Presenterator.ogg"))
+				if (!currentSong.openFromFile("resources/Presenterator.ogg"))
 					printf("Failed to load song\n");
 				currentSong.setLoop(TRUE);
 				currentSong.play();
@@ -139,7 +139,7 @@ private:
 
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::S)) {
 				currentSong.stop();
-				if (!currentSong.openFromFile("Resources/LoveStory.ogg"))
+				if (!currentSong.openFromFile("resources/LoveStory.ogg"))
 					printf("Failed to load song\n");
 				currentSong.setLoop(TRUE);
 				currentSong.play();
@@ -147,7 +147,7 @@ private:
 
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::D)) {
 				currentSong.stop();
-				if (!currentSong.openFromFile("Resources/Venus.wav"))
+				if (!currentSong.openFromFile("resources/Venus.wav"))
 					printf("Failed to load song\n");
 				currentSong.setLoop(TRUE);
 				currentSong.play();
