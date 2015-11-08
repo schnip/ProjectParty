@@ -55,8 +55,9 @@ public:
 		uploadUniforms(shaderProg[shaderId], state);
 		
 		//draw
-		state.getModel().draw(shaderProg[shaderId]);
-		state.model2.draw(shaderProg[shaderId]);
+		for(size_t i=0; i<NUM_OBJECTS; i++) {
+			state.getModel(i).draw(shaderProg[shaderId]);
+		}
 
 		glUseProgram(0);
 		checkGLError("model");
@@ -99,7 +100,7 @@ private:
 
 	void uploadUniforms(GLuint shaderId, WorldState const & state)
 	{
-		glm::vec3 dim = state.getModel().getDimension();
+		glm::vec3 dim = state.getModel(0).getDimension();
 		float maxDim = std::max(dim[0], std::max(dim[1], dim[2]));
 		_near = maxDim*0.1f;
 		_far  = maxDim*3.0f;
@@ -120,7 +121,7 @@ private:
 		Lp = glm::ortho(-15.0f, 15.0f, -15.0f, 15.0f, 0.0f, 50.0f);
 
 		//hacky light source size change
-		GLfloat maxDis = state.getModel().getDimension()[2] * 3;
+		GLfloat maxDis = state.getModel(0).getDimension()[2] * 3;
 		GLfloat distScale = 1.0f / (glm::length(Lr*lightPos - camPos) / maxDis);
 		glPointSize(glm::mix(1.0f, 10.0f, distScale));
 
