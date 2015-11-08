@@ -6,6 +6,7 @@
 #define TARGET_FPS 30                // controls spin update rate
 #define TIME_BETWEEN_UPDATES 0.015   // seconds between motion updates
 #define PRINT_FPS_INTERVAL 10.0f
+#define TRUE 1
 
 
 #ifdef __APPLE__
@@ -75,7 +76,7 @@ public:
 		currentSong.setLoop(TRUE);
 
 		currentSong.play();
-		if (currentSong.getStatus() != sf::SoundSource::Status::Playing)
+		if (currentSong.getStatus() != sf::SoundSource::Playing)
 			printf("Not playing\n");
 
 		while (state.isRunning())

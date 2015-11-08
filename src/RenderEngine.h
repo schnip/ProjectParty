@@ -57,6 +57,8 @@ public:
 		//draw
 		for(size_t i=0; i<NUM_OBJECTS; i++) {
 			state.getModel(i).draw(shaderProg[shaderId]);
+			//glm::mat4 M = glm::mat4(1);
+			//glUniformMatrix4fv(glGetUniformLocation(shaderId, "M"), 1, GL_FALSE, &M[0][0]);
 		}
 
 		glUseProgram(0);
