@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <SFML/Window.hpp>
+#include <SFML/Audio.hpp>
 //#define _USE_MATH_DEFINES
 //#include <math.h>
 #define PI 3.14159f
@@ -68,6 +69,15 @@ public:
 		float lastPrint = lastFrame;
 		float targetFrameTime = 1.0f/(float)TARGET_FPS;
 		
+		if (!currentSong.openFromFile("Resources/LoveStory.ogg")) {
+			printf("Failed to load music\n");
+		}
+		currentSong.setLoop(TRUE);
+
+		currentSong.play();
+		if (currentSong.getStatus() != sf::SoundSource::Status::Playing)
+			printf("Not playing\n");
+
 		while (state.isRunning())
 		{			
 			window->setActive();
@@ -95,6 +105,7 @@ public:
 	}
 	
 private:
+	sf::Music currentSong;
 	sf::Window * window;
 	RenderEngine render;
 	WorldState state;
@@ -116,6 +127,31 @@ private:
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape))
 				state.setRunning(false);
 			
+			//Music!
+			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::A)) {
+				currentSong.stop();
+				if (!currentSong.openFromFile("Resources/Presenterator.ogg"))
+					printf("Failed to load song\n");
+				currentSong.setLoop(TRUE);
+				currentSong.play();
+			}
+
+			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::S)) {
+				currentSong.stop();
+				if (!currentSong.openFromFile("Resources/LoveStory.ogg"))
+					printf("Failed to load song\n");
+				currentSong.setLoop(TRUE);
+				currentSong.play();
+			}
+
+			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::D)) {
+				currentSong.stop();
+				if (!currentSong.openFromFile("Resources/Venus.wav"))
+					printf("Failed to load song\n");
+				currentSong.setLoop(TRUE);
+				currentSong.play();
+			}
+
 			if((event.type == sf::Event::TextEntered) && (event.text.unicode == 'r'))
 				state.toggleModelRotate();
 			if((event.type == sf::Event::TextEntered) && (event.text.unicode == 't'))
