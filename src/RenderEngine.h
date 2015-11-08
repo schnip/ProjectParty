@@ -52,10 +52,11 @@ public:
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glUseProgram(shaderProg[shaderId]);
-		uploadUniforms(shaderProg[shaderId], state);
+		//uploadUniforms(shaderProg[shaderId], state);
 		
 		//draw
 		for(size_t i=0; i<NUM_OBJECTS; i++) {
+			uploadUniforms(shaderProg[shaderId], state, i);
 			state.getModel(i).draw(shaderProg[shaderId]);
 			//glm::mat4 M = glm::mat4(1);
 			//glUniformMatrix4fv(glGetUniformLocation(shaderId, "M"), 1, GL_FALSE, &M[0][0]);
@@ -100,7 +101,7 @@ private:
 		checkGLError("setup");
 	}
 
-	void uploadUniforms(GLuint shaderId, WorldState const & state)
+	void uploadUniforms(GLuint shaderId, WorldState const & state, int modelId)
 	{
 		glm::vec3 dim = state.getModel(0).getDimension();
 		float maxDim = std::max(dim[0], std::max(dim[1], dim[2]));
@@ -109,7 +110,7 @@ private:
 		fov = 0.9f;
 		
 		glm::mat4 P = glm::perspective(1.0f, fov, _near, _far);
-		glm::mat4 mT = state.getModelTranslate();
+		glm::mat4 mT = state.getModelTranslate(modelId);
 		glm::mat4 mR = state.getModelRotate();
 		glm::mat4 C = state.getCameraMatrix();
 		glm::mat4 M = C*mR*mT;
