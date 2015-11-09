@@ -133,15 +133,16 @@ public:
 		float elapsed = t - this->currentTime;
 		this->updateFrameTime(elapsed);
 		
-		//spin light
+		// spin light
 		if(lightRotating)
 			lightRotate = lightIncrement * lightRotate;
 		
-		//spin model
+		// spin model
 		if(modelRotating)
 			modelRotate = modelIncrement * modelRotate;
 
 		// Translate second object
+		modelTranslate[1] = modelTranslate[1] + glm::translate(glm::mat4(1), glm::vec3(t*.1f,0,0));
 		
 		glm::vec3 currentLightPos = glm::vec3(lightRotate*lightPos);
 		lightView = glm::lookAt(currentLightPos, cameraLook, cameraUp);
