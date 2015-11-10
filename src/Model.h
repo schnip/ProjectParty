@@ -135,7 +135,7 @@ public:
 
 			glm::vec3 p[POS_DIM];
 			glm::vec3 n[POS_DIM];
-			glm::vec2 t[TEX_DIM];
+			glm::vec2 t[POS_DIM];
 
 			for(size_t v=0; v<face->vertex_count; v++) {
 				pId[v] = face->vertex_index[v];

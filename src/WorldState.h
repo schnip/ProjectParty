@@ -142,7 +142,8 @@ public:
 			modelRotate = modelIncrement * modelRotate;
 
 		// Translate second object
-		modelTranslate[1] = modelTranslate[1] + glm::translate(glm::mat4(1), glm::vec3(t*.1f,0,0));
+		if (modelRotating)
+		modelTranslate[1] = modelTranslate[1] + glm::translate(glm::mat4(1), glm::vec3(elapsed,0,0));
 		
 		glm::vec3 currentLightPos = glm::vec3(lightRotate*lightPos);
 		lightView = glm::lookAt(currentLightPos, cameraLook, cameraUp);
