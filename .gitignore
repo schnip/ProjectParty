@@ -1,2 +1,6 @@
 a.out
 *.o
+x64/*
+SFMLApp.opensdf
+SFMLApp.sdf
+SFMLApp.v12.suo

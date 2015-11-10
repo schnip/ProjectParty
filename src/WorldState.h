@@ -13,7 +13,9 @@ private:
 	Model model[NUM_OBJECTS];
 
 public:
-	
+	int lightStatus;
+	float beatTracker;
+	float secondsPerBeat;
 	float currentTime;
 	
 	glm::vec3 cameraPos;
@@ -21,7 +23,8 @@ public:
 	glm::vec3 cameraUp;
 	
 	glm::vec4 lightPos;
-	glm::vec3 lightIntensity;
+	glm::vec4 lightIntensity;
+	glm::vec4 baseLightIntensity;
 	
 	glm::mat4 lightRotate;
 	glm::mat4 lightIncrement;
@@ -63,6 +66,9 @@ public:
 			model[i].setupAttributeBuffers();
 		}
 		
+		lightStatus = 1;
+		secondsPerBeat = 60.0 / 120.0;
+		beatTracker = 0;
 		glm::vec3 center = model[0].getCentroid();
 		glm::vec3 max = model[0].getMaxBound();
 		glm::vec3 min = model[0].getMinBound();
@@ -80,8 +86,9 @@ public:
 		
 		lightPos = glm::vec4((center+(toMax*2.0f)), 1);
 		lightPos[1] = (center+(toMax*6.0f))[1];
-		lightIntensity = glm::vec3(1,1,1);
-		
+		baseLightIntensity = glm::vec4(1, 0, 0, 0);
+		lightIntensity = baseLightIntensity;
+
 		lightRotate = glm::mat4(1);
 		lightIncrement = glm::rotate(glm::mat4(1), -0.05f, glm::vec3(0,1,0));
 		
@@ -133,6 +140,25 @@ public:
 		float elapsed = t - this->currentTime;
 		this->updateFrameTime(elapsed);
 		
+		//Light chaning stuff
+		beatTracker = beatTracker + elapsed;
+		if (beatTracker >= secondsPerBeat) {
+			//printf("Changed Light\n");
+			beatTracker = 0;
+			if (lightStatus == 0) {
+				lightStatus++;
+				lightIntensity = glm::vec4(0, 1, 0, 0);
+			}
+			else if (lightStatus == 1) {
+				lightIntensity = glm::vec4(0,0,1,0);
+				lightStatus++;
+			}
+			else if (lightStatus == 2) {
+				lightIntensity = glm::vec4(1, 0, 0, 0);
+				lightStatus = 0;
+			}
+		}
+
 		// spin light
 		if(lightRotating)
 			lightRotate = lightIncrement * lightRotate;
@@ -172,7 +198,7 @@ public:
 	glm::vec4 getLightPos() const
 	{ return this->lightPos; }
 	
-	glm::vec3 getLightIntensity() const
+	glm::vec4 getLightIntensity() const
 	{ return this->lightIntensity; }
 	
 	glm::mat4 getCameraMatrix() const

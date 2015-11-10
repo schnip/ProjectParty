@@ -135,6 +135,7 @@ private:
 					printf("Failed to load song\n");
 				currentSong.setLoop(TRUE);
 				currentSong.play();
+				state.secondsPerBeat = 60.0 / 130.0;
 			}
 
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::S)) {
@@ -143,6 +144,7 @@ private:
 					printf("Failed to load song\n");
 				currentSong.setLoop(TRUE);
 				currentSong.play();
+				state.secondsPerBeat = 60.0 / 130.0;
 			}
 
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::D)) {
@@ -151,6 +153,7 @@ private:
 					printf("Failed to load song\n");
 				currentSong.setLoop(TRUE);
 				currentSong.play();
+				state.secondsPerBeat = 60.0 / 102.0;
 			}
 
 			if((event.type == sf::Event::TextEntered) && (event.text.unicode == 'r'))
