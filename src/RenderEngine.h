@@ -111,7 +111,7 @@ private:
 		
 		glm::mat4 P = glm::perspective(1.0f, fov, _near, _far);
 		glm::mat4 mT = state.getModelTranslate(modelId);
-		glm::mat4 mR = state.getModelRotate();
+		glm::mat4 mR = state.getModelRotate(modelId);
 		glm::mat4 C = state.getCameraMatrix();
 		glm::mat4 M = C*mR*mT;
 		glm::mat3 N = glm::inverseTranspose(glm::mat3(M));

@@ -25,8 +25,8 @@ public:
 	
 	glm::mat4 lightRotate;
 	glm::mat4 lightIncrement;
-	glm::mat4 modelRotate;
-	glm::mat4 modelIncrement;
+	glm::mat4 modelRotate[NUM_OBJECTS];
+	glm::mat4 modelIncrement[NUM_OBJECTS];
 	glm::mat4 modelTranslate[NUM_OBJECTS];
 	glm::mat4 cameraMatrix;
 	glm::mat4 lightView;
@@ -85,9 +85,9 @@ public:
 		lightRotate = glm::mat4(1);
 		lightIncrement = glm::rotate(glm::mat4(1), -0.05f, glm::vec3(0,1,0));
 		
-		modelRotate = glm::mat4(1);
-		modelIncrement = glm::rotate(glm::mat4(1), 0.02f, glm::vec3(0,1,0));
 		for(size_t i=0; i<NUM_OBJECTS; i++) {
+			modelRotate[i] = glm::mat4(1);
+			modelIncrement[i] = glm::rotate(glm::mat4(1), 0.02f, glm::vec3(0,1,0));
 			modelTranslate[i] = glm::translate(glm::mat4(1), -model[i].getCentroid());
 		}
 
@@ -138,8 +138,11 @@ public:
 			lightRotate = lightIncrement * lightRotate;
 		
 		// spin model
-		if(modelRotating)
-			modelRotate = modelIncrement * modelRotate;
+		if(modelRotating) {
+			for (int i = 0; i<NUM_OBJECTS; i++) {
+				modelRotate[i] = modelIncrement[i] * modelRotate[i];
+			}
+		}
 
 		// Translate second object
 		if (modelRotating)
@@ -157,8 +160,8 @@ public:
 	glm::mat4 getModelTranslate(int i) const
 	{ return modelTranslate[i]; }
 	
-	glm::mat4 getModelRotate() const
-	{ return modelRotate; }
+	glm::mat4 getModelRotate(int i) const
+	{ return modelRotate[i]; }
 	
 	glm::mat4 getLightRotate() const
 	{ return lightRotate; }
