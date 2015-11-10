@@ -119,6 +119,7 @@ private:
 		glm::vec4 camPos = state.getCameraPos();
 		glm::mat4 Lr = state.getLightRotate();
 		glm::mat4 Lv = state.getLightViewMatrix();
+		glm::vec4 Li = state.getLightIntensity();
 		glm::mat4 Lp;
 		Lp = glm::perspective(1.0f, fov, _near, _far);
 		Lp = glm::ortho(-15.0f, 15.0f, -15.0f, 15.0f, 0.0f, 50.0f);
@@ -140,6 +141,7 @@ private:
 		glUniformMatrix3fv(glGetUniformLocation(shaderId, "N"), 1, GL_FALSE, &N[0][0]);
 		glUniformMatrix4fv(glGetUniformLocation(shaderId, "Lr"), 1, GL_FALSE, &Lr[0][0]);
 		glUniformMatrix4fv(glGetUniformLocation(shaderId, "Lv"), 1, GL_FALSE, &Lv[0][0]);
+		glUniform4fv(glGetUniformLocation(shaderId, "Li"), 1, &Li[0]);
 		glUniform4fv(glGetUniformLocation(shaderId, "lightPos"), 1, &lightPos[0]);
 		glUniform4fv(glGetUniformLocation(shaderId, "camPos"), 1, &camPos[0]);
 

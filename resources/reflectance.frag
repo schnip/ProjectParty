@@ -12,6 +12,7 @@ uniform mat3 N;   //inverse transpose of upperleft 3x3 of M
 uniform mat4 Lr;  //light rotation matrix
 uniform vec4 lightPos;    //light position
 uniform vec4 camPos;      //camera position
+uniform vec4 Li; //light intensity vector
 
 uniform sampler2D texId;
 //uniform sampler2DRect texId;
@@ -30,7 +31,7 @@ vec4 reflectance(in vec3 pos, in vec3 norm, in vec3 colorIn, in float visibility
 	vec4 lp = lightPos;
 	vec4 n = normalize(vec4(norm,0));
 	vec4 c = vec4(0);
-	vec4 Li = vec4(1);
+	//vec4 Li = vec4(1);
 	vec4 ka = Ka;
 	vec4 kd = Kd;
 	vec4 ks = Ks;
