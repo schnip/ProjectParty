@@ -140,7 +140,7 @@ public:
 		// spin model
 		if(modelRotating) {
 			for (int i = 0; i<NUM_OBJECTS; i++) {
-				modelRotate[i] = modelIncrement[i] * modelRotate[i];
+				//modelRotate[i] = modelIncrement[i] * modelRotate[i];
 				if (i>0) {
 					modelRotate[i] = modelIncrement[i] * modelRotate[i];
 				}
