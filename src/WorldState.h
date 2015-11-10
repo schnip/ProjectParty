@@ -141,12 +141,15 @@ public:
 		if(modelRotating) {
 			for (int i = 0; i<NUM_OBJECTS; i++) {
 				modelRotate[i] = modelIncrement[i] * modelRotate[i];
+				if (i>0) {
+					modelRotate[i] = modelIncrement[i] * modelRotate[i];
+				}
 			}
 		}
 
 		// Translate second object
-		if (modelRotating)
-		modelTranslate[1] = glm::translate(glm::mat4(1), glm::vec3(elapsed,0,0))*modelTranslate[1];
+		//if (modelRotating)
+		//modelTranslate[1] = glm::translate(glm::mat4(1), glm::vec3(elapsed,0,0))*modelTranslate[1];
 		
 		glm::vec3 currentLightPos = glm::vec3(lightRotate*lightPos);
 		lightView = glm::lookAt(currentLightPos, cameraLook, cameraUp);
