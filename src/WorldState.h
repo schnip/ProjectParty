@@ -215,8 +215,10 @@ public:
 		}
 
 		// Translate second object
-		//if (modelRotating)
-		//modelTranslate[1] = glm::translate(glm::mat4(1), glm::vec3(elapsed,0,0))*modelTranslate[1];
+		if (modelRotating){
+			modelTranslate[1] = glm::translate(glm::mat4(1), glm::vec3(elapsed,0,0))*modelTranslate[1];
+			modelTranslate[0] = glm::translate(glm::mat4(1), glm::vec3(0,-elapsed,0))*modelTranslate[0];
+		}
 		
 		//////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////
