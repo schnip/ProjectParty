@@ -47,7 +47,7 @@ vec4 reflectance(in vec3 pos, in vec3 norm, in vec3 colorIn, in float visibility
 	vec4 c = vec4(0);
 	vec4 ka = vec4(0.05);//ambient
 	//vec4 kd = vec4(0.2, 0.2, 0.8, 1);
-	vec4 kd = smoothColor;
+	vec4 kd = vec4(colorIn.xyz,1);//smoothColor;
 	vec4 ks = vec4(.8);
 
 	lp = C*Lr*lp;
@@ -131,9 +131,10 @@ void main()
 
 	float visibilityFactor = (visibilityFactorOne + visibilityFactorTwo + visibilityFactorThree)/3;
 	
-	vec4 reflectanceOne = reflectance(smoothPos, smoothNorm, smoothColor.xyz, visibilityFactorOne, lightPosOne, LrOne, LiOne);
-	vec4 reflectanceTwo = reflectance(smoothPos, smoothNorm, smoothColor.xyz, visibilityFactorTwo, lightPosTwo, LrTwo,LiTwo);
-	vec4 reflectanceThree = reflectance(smoothPos, smoothNorm, smoothColor.xyz, visibilityFactorThree, lightPosThree, LrThree,LiThree);
+	vec3 gray = vec3(1,1,1);
+	vec4 reflectanceOne = reflectance(smoothPos, smoothNorm, gray, visibilityFactorOne, lightPosOne, LrOne, LiOne);//smoothColor.xyz
+	vec4 reflectanceTwo = reflectance(smoothPos, smoothNorm, gray, visibilityFactorTwo, lightPosTwo, LrTwo,LiTwo);
+	vec4 reflectanceThree = reflectance(smoothPos, smoothNorm, gray, visibilityFactorThree, lightPosThree, LrThree,LiThree);
 
 
 	fragColor = (reflectanceOne + reflectanceTwo + reflectanceThree)/3;
