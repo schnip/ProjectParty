@@ -58,7 +58,7 @@ public:
 		state.currentRes[1] = RESOLUTION;
 		render.init(state);
 		resize(window->getSize().x, window->getSize().y);
-		//render.buildRenderBuffers(window->getSize().x, window->getSize().y);
+		render.buildRenderBuffers(window->getSize().x, window->getSize().y);
 		
 		previousPos = glm::vec2(0);
 		buttonDown[0]=false;

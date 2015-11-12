@@ -43,27 +43,302 @@ public:
 
 	void display(WorldState & state)
 	{
-		size_t shaderId;
+		size_t sid;
 
-		shaderId = 0;
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+#pragma region create first shadowtexture
+		//????????????????????????????????????????????????????????????????????/
+		//????????????????????????????????????????????????????????????????????/
+		///// light view /////
+		glViewport(0, 0, mapSizeX, mapSizeY);
+		//activate our new framebuffer
+		glBindFramebuffer(GL_FRAMEBUFFER, shadowFrameBufferOne);
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glUseProgram(shaderProg[shaderId]);
+		//use shader
+		sid = 2;
+		glUseProgram(shaderProg[sid]);
+		//uploadUniforms(shaderProg[sid], state, 0);
+
+		//draw
+		for (size_t i = 0; i<NUM_OBJECTS; i++) {
+			uploadUniforms(shaderProg[sid], state, i, 0);
+			state.getModel(i).draw(shaderProg[sid]);
+		}
+
+		checkGLError("light view");
+
+		//????????????????????????????????????????????????????????????????????/
+		//????????????????????????????????????????????????????????????????????/
+#pragma endregion
+
+#pragma region create second shadowtexture
+
+		//????????????????????????????????????????????????????????????????????/
+		//????????????????????????????????????????????????????????????????????/
+		///// light view /////
+		glViewport(0, 0, mapSizeX, mapSizeY);
+		//activate our new framebuffer
+		glBindFramebuffer(GL_FRAMEBUFFER, shadowFrameBufferTwo);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		//use shader
+		sid = 2;
+		glUseProgram(shaderProg[sid]);
+		//uploadUniforms(shaderProg[sid], state, 1);
+
+		//draw
+		for (size_t i = 0; i<NUM_OBJECTS; i++) {
+			uploadUniforms(shaderProg[sid], state, i, 1);
+			state.getModel(i).draw(shaderProg[sid]);
+		}
+		checkGLError("light view");
+
+		//????????????????????????????????????????????????????????????????????/
+		//????????????????????????????????????????????????????????????????????/
+#pragma endregion
+
+#pragma region create third shadowtexture
+
+		//????????????????????????????????????????????????????????????????????/
+		//????????????????????????????????????????????????????????????????????/
+		///// light view /////
+		glViewport(0, 0, mapSizeX, mapSizeY);
+		//activate our new framebuffer
+		glBindFramebuffer(GL_FRAMEBUFFER, shadowFrameBufferThree);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		//use shader
+		sid = 2;
+		glUseProgram(shaderProg[sid]);
+		//uploadUniforms(shaderProg[sid], state, 2);
+
+		//draw
+		for (size_t i = 0; i<NUM_OBJECTS; i++) {
+			uploadUniforms(shaderProg[sid], state, i, 2);
+			state.getModel(i).draw(shaderProg[sid]);
+		}
+		checkGLError("light view");
+
+		//????????????????????????????????????????????????????????????????????/
+		//????????????????????????????????????????????????????????????????????/
+#pragma endregion
+
+#pragma region draw light point
+
+		glViewport(0, 0, state.currentRes[0], state.currentRes[1]);
+		///// light point /////
+		//default framebuffer
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		sid = 1;
+		glUseProgram(shaderProg[sid]);
+		//uploadUniforms(shaderProg[sid], state, 0);
+
+		for (size_t i = 0; i<NUM_OBJECTS; i++) {
+			uploadUniforms(shaderProg[sid], state, i, 0);
+			state.getModel(i).draw(shaderProg[sid]);
+		}
+		checkGLError("light point");
+#pragma endregion	
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////		
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////		
+		GLuint texId = 0;
+#pragma region activate and bind shadowRenderTextureOne
+		/////////////////////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////////////////
+		glActiveTexture(GL_TEXTURE0 + texId);
+		glBindTexture(TEX_TYPE, shadowRenderTextureOne);
+		glUniform1i(glGetUniformLocation(shaderProg[sid], "texIdOne"), texId);
+		/////////////////////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////////////////  
+#pragma endregion
+
+#pragma region activate and bind shadowRenderTextureTwo		
+		/////////////////////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////////////////
+		glActiveTexture(GL_TEXTURE0 + texId + 1);
+		glBindTexture(TEX_TYPE, shadowRenderTextureTwo);
+		glUniform1i(glGetUniformLocation(shaderProg[sid], "texIdTwo"), texId + 1);
+		/////////////////////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////////////////
+#pragma endregion
+
+#pragma region activate and bind shadowRenderTextureThree	
+		/////////////////////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////////////////
+		glActiveTexture(GL_TEXTURE0 + texId + 2);
+		glBindTexture(TEX_TYPE, shadowRenderTextureThree);
+		glUniform1i(glGetUniformLocation(shaderProg[sid], "texIdThree"), texId + 2);
+		/////////////////////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////////////////
+#pragma endregion
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+		sid = 0;
+
+		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		glUseProgram(shaderProg[sid]);
 		//uploadUniforms(shaderProg[shaderId], state);
 		
 		//draw
 		for(size_t i=0; i<NUM_OBJECTS; i++) {
-			uploadUniforms(shaderProg[shaderId], state, i);
-			state.getModel(i).draw(shaderProg[shaderId]);
+			uploadUniforms(shaderProg[sid], state, i,0);
+			state.getModel(i).draw(shaderProg[sid]);
 			//glm::mat4 M = glm::mat4(1);
 			//glUniformMatrix4fv(glGetUniformLocation(shaderId, "M"), 1, GL_FALSE, &M[0][0]);
 		}
 
 		glUseProgram(0);
 		checkGLError("model");
+	}
+	void buildRenderBuffers(size_t xSize, size_t ySize)
+	{
+		mapSizeX = 2048; // xSize;
+		mapSizeY = 2048;//ySize;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#pragma region buffer cleanup
+
+		if (shadowRenderTextureOne != 0) {
+			glDeleteTextures(1, &shadowRenderTextureOne);
+			glDeleteRenderbuffers(1, &shadowRenderBufferOne);
+		}
+		if (shadowRenderTextureTwo != 0) {
+			glDeleteTextures(1, &shadowRenderTextureTwo);
+			glDeleteRenderbuffers(1, &shadowRenderBufferTwo);
+		}
+		if (shadowRenderTextureThree != 0) {
+			glDeleteTextures(1, &shadowRenderTextureThree);
+			glDeleteRenderbuffers(1, &shadowRenderBufferThree);
+		}
+#pragma endregion
+
+#pragma region Shadowbufferone setup
+		////////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//setup texture
+		glGenTextures(1, &shadowRenderTextureOne);
+		glBindTexture(TEX_TYPE, shadowRenderTextureOne);
+		glTexParameteri(TEX_TYPE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(TEX_TYPE, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(TEX_TYPE, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(TEX_TYPE, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+		//framebuffer
+		glGenFramebuffers(1, &shadowFrameBufferOne); //generate framebuffer object name
+		glBindFramebuffer(GL_FRAMEBUFFER, shadowFrameBufferOne); //bind a frame buffer to a framebuffer target
+
+		//make renderbuffer for depth, attach to FB, must have the z depth
+		glGenRenderbuffers(1, &shadowRenderBufferOne);
+		glBindRenderbuffer(GL_RENDERBUFFER, shadowRenderBufferOne);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, mapSizeX, mapSizeY);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, shadowRenderBufferOne);
+
+		//make texture, attach to FB
+		glTexImage2D(TEX_TYPE, 0, GL_RGBA, mapSizeX, mapSizeY, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, shadowRenderTextureOne, 0);
+		GLenum colorBufferOne = GL_COLOR_ATTACHMENT0;
+		glDrawBuffers(1, &colorBufferOne);
+
+		checkGLError("shadow buffer");
+		checkGLFrameBuffer(GL_FRAMEBUFFER, "shadow buffer");
+		////////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////////  
+#pragma endregion
+
+#pragma region ShadowbufferTwo setup
+		////////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//setup texture
+		glGenTextures(1, &shadowRenderTextureTwo);
+		glBindTexture(TEX_TYPE, shadowRenderTextureTwo);
+		glTexParameteri(TEX_TYPE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(TEX_TYPE, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(TEX_TYPE, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(TEX_TYPE, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+		//framebuffer
+		glGenFramebuffers(1, &shadowFrameBufferTwo); //generate framebuffer object name
+		glBindFramebuffer(GL_FRAMEBUFFER, shadowFrameBufferTwo); //bind a frame buffer to a framebuffer target
+
+		//make renderbuffer for depth, attach to FB, must have the z depth
+		glGenRenderbuffers(1, &shadowRenderBufferTwo);
+		glBindRenderbuffer(GL_RENDERBUFFER, shadowRenderBufferTwo);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, mapSizeX, mapSizeY);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, shadowRenderBufferTwo);
+
+		//make texture, attach to FB
+		glTexImage2D(TEX_TYPE, 0, GL_RGBA, mapSizeX, mapSizeY, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, shadowRenderTextureTwo, 0);
+		GLenum colorBufferTwo = GL_COLOR_ATTACHMENT0;
+		glDrawBuffers(1, &colorBufferTwo);
+
+		checkGLError("shadow buffer");
+		checkGLFrameBuffer(GL_FRAMEBUFFER, "shadow buffer");
+		////////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////////  
+#pragma endregion
+
+#pragma region ShadowbufferThree setup
+		////////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//setup texture
+		glGenTextures(1, &shadowRenderTextureThree);
+		glBindTexture(TEX_TYPE, shadowRenderTextureThree);
+		glTexParameteri(TEX_TYPE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(TEX_TYPE, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(TEX_TYPE, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(TEX_TYPE, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+		//framebuffer
+		glGenFramebuffers(1, &shadowFrameBufferThree); //generate framebuffer object name
+		glBindFramebuffer(GL_FRAMEBUFFER, shadowFrameBufferThree); //bind a frame buffer to a framebuffer target
+
+		//make renderbuffer for depth, attach to FB, must have the z depth
+		glGenRenderbuffers(1, &shadowRenderBufferThree);
+		glBindRenderbuffer(GL_RENDERBUFFER, shadowRenderBufferThree);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, mapSizeX, mapSizeY);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, shadowRenderBufferThree);
+
+		//make texture, attach to FB
+		glTexImage2D(TEX_TYPE, 0, GL_RGBA, mapSizeX, mapSizeY, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, shadowRenderTextureThree, 0);
+		GLenum colorBufferThree = GL_COLOR_ATTACHMENT0;
+		glDrawBuffers(1, &colorBufferThree);
+
+		checkGLError("shadow buffer");
+		checkGLFrameBuffer(GL_FRAMEBUFFER, "shadow buffer");
+		////////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////////  
+#pragma endregion
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
 private:
@@ -77,7 +352,29 @@ private:
 	GLuint renderBuffer;
 	size_t mapSizeX;
 	size_t mapSizeY;
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	GLuint shadowFrameBufferOne;
+	GLuint shadowFrameBufferTwo;
+	GLuint shadowFrameBufferThree;
 
+	GLuint shadowRenderTextureOne;
+	GLuint shadowRenderTextureTwo;
+	GLuint shadowRenderTextureThree;
+
+	GLuint shadowRenderBufferOne;
+	GLuint shadowRenderBufferTwo;
+	GLuint shadowRenderBufferThree;
+
+	//GLuint shadowFrameBuffers[ARRAY_SIZE];
+	//GLuint shadowRenderTextures[ARRAY_SIZE];
+	//GLuint shadowRenderBuffers[ARRAY_SIZE];
+
+	//GLuint shadowFrameBuffers[ARRAY_SIZE] = { shadowFrameBufferOne, shadowFrameBufferTwo, shadowFrameBufferThree };
+	//GLuint shadowRenderTextures[ARRAY_SIZE] = { shadowRenderTextureOne, shadowRenderTextureTwo, shadowRenderTextureThree };
+	//GLuint shadowRenderBuffers[ARRAY_SIZE] = { shadowRenderBufferOne, shadowRenderBufferTwo, shadowRenderBufferThree };
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	glm::vec2 size;
 	
 	float _near;
@@ -90,6 +387,14 @@ private:
 		char const * fragPath = "resources/reflectance.frag";
 		shaderProg[0] = ShaderManager::shaderFromFile(&vertPath, &fragPath, 1, 1);
 
+		char const * lightVPath = "resources/lightPos.vert";
+		char const * lightFPath = "resources/lightPos.frag";
+		shaderProg[1] = ShaderManager::shaderFromFile(&lightVPath, &lightFPath, 1, 1);
+
+		char const * shdVPath = "resources/shadowMap.vert";
+		char const * shdFPath = "resources/shadowMap.frag";
+		shaderProg[2] = ShaderManager::shaderFromFile(&shdVPath, &shdFPath, 1, 1);
+
 		checkGLError("shader");
 	}
 
@@ -101,7 +406,7 @@ private:
 		checkGLError("setup");
 	}
 
-	void uploadUniforms(GLuint shaderId, WorldState const & state, int modelId)
+	void uploadUniforms(GLuint shaderId, WorldState const & state, int modelId, GLint lightID)
 	{
 		glm::vec3 dim = state.getModel(0).getDimension();
 		float maxDim = std::max(dim[0], std::max(dim[1], dim[2]));
@@ -115,18 +420,45 @@ private:
 		glm::mat4 C = state.getCameraMatrix();
 		glm::mat4 M = C*mR*mT;
 		glm::mat3 N = glm::inverseTranspose(glm::mat3(M));
-		glm::vec4 lightPos = state.getLightPos();
+		//glm::vec4 lightPos = state.getLightPos();
 		glm::vec4 camPos = state.getCameraPos();
-		glm::mat4 Lr = state.getLightRotate();
-		glm::mat4 Lv = state.getLightViewMatrix();
+		//glm::mat4 Lr = state.getLightRotate();
+		//glm::mat4 Lv = state.getLightViewMatrix();
 		glm::vec4 Li = state.getLightIntensity();
 		glm::mat4 Lp;
 		Lp = glm::perspective(1.0f, fov, _near, _far);
 		Lp = glm::ortho(-15.0f, 15.0f, -15.0f, 15.0f, 0.0f, 50.0f);
 
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////		
+		glm::vec4 lightPositions[ARRAY_SIZE];
+		glm::mat4 Lvs[ARRAY_SIZE];
+		glm::mat4 Lrs[ARRAY_SIZE];
+
+		for (int i = 0; i < ARRAY_SIZE; i++){
+			lightPositions[i] = state.getLightPos(i);
+			Lvs[i] = state.getLightView(i);
+			Lrs[i] = state.getLightRotation(i);
+		}
+
+		glm::vec4 lightPos = lightPositions[lightID];
+		glm::mat4 Lr = Lrs[lightID];
+		glm::mat4 Lv = Lvs[lightID];
+
+		glm::vec4 lightPosOne = lightPositions[0];
+		glm::vec4 lightPosTwo = lightPositions[1];
+		glm::vec4 lightPosThree = lightPositions[2];
+		glm::mat4 LrOne = Lrs[0];
+		glm::mat4 LrTwo = Lrs[1];
+		glm::mat4 LrThree = Lrs[2];
+		glm::mat4 LvOne = Lvs[0];
+		glm::mat4 LvTwo = Lvs[1];
+		glm::mat4 LvThree = Lvs[2];
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//hacky light source size change
 		GLfloat maxDis = state.getModel(0).getDimension()[2] * 3;
-		GLfloat distScale = 1.0f / (glm::length(Lr*lightPos - camPos) / maxDis);
+		GLfloat distScale = 1.0f / (glm::length(state.getLightRotation(0)*lightPos - camPos) / maxDis);
 		glPointSize(glm::mix(1.0f, 10.0f, distScale));
 
 		//printf("cam %f %f %f\n", camPos[0], camPos[1], camPos[2]);
@@ -144,6 +476,26 @@ private:
 		glUniform4fv(glGetUniformLocation(shaderId, "Li"), 1, &Li[0]);
 		glUniform4fv(glGetUniformLocation(shaderId, "lightPos"), 1, &lightPos[0]);
 		glUniform4fv(glGetUniformLocation(shaderId, "camPos"), 1, &camPos[0]);
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		glUniformMatrix4fv(glGetUniformLocation(shaderId, "Lr"), 1, GL_FALSE, &Lr[0][0]);
+		glUniformMatrix4fv(glGetUniformLocation(shaderId, "Lv"), 1, GL_FALSE, &Lv[0][0]);
+		glUniform4fv(glGetUniformLocation(shaderId, "lightPos"), 1, &lightPos[0]);
+
+		glUniformMatrix4fv(glGetUniformLocation(shaderId, "LrOne"), 1, GL_FALSE, &LrOne[0][0]);
+		glUniformMatrix4fv(glGetUniformLocation(shaderId, "LvOne"), 1, GL_FALSE, &LvOne[0][0]);
+		glUniform4fv(glGetUniformLocation(shaderId, "lightPosOne"), 1, &lightPosOne[0]);
+
+		glUniformMatrix4fv(glGetUniformLocation(shaderId, "LrTwo"), 1, GL_FALSE, &LrTwo[0][0]);
+		glUniformMatrix4fv(glGetUniformLocation(shaderId, "LvTwo"), 1, GL_FALSE, &LvTwo[0][0]);
+		glUniform4fv(glGetUniformLocation(shaderId, "lightPosTwo"), 1, &lightPosTwo[0]);
+
+		glUniformMatrix4fv(glGetUniformLocation(shaderId, "LrThree"), 1, GL_FALSE, &LrThree[0][0]);
+		glUniformMatrix4fv(glGetUniformLocation(shaderId, "LvThree"), 1, GL_FALSE, &LvThree[0][0]);
+		glUniform4fv(glGetUniformLocation(shaderId, "lightPosThree"), 1, &lightPosThree[0]);
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //		glUniform1f(glGetUniformLocation(shaderId, "elapsedTime"), state.currentTime);
 //		glUniform1f(glGetUniformLocation(shaderId, "near"), _near);
