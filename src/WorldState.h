@@ -3,7 +3,7 @@
 #include "Model.h"
 
 #define NUM_TRACKED_FRAMES 10
-#define NUM_OBJECTS 2
+#define NUM_OBJECTS 3
 const int ARRAY_SIZE = 3;
 
 const glm::vec4 lightPalletOne[ARRAY_SIZE] = { glm::vec4(1.0f, 0.271f, 0.0f, 0.0f), glm::vec4(0.5f, 1.0f, 0.0f, 0.0f), glm::vec4(0.251f, 0.878f, 0.924f, 0.0f) };
@@ -82,6 +82,7 @@ public:
 		}
 		model[0].init("resources/material_test.obj");
 		model[1].init("resources/teapot.obj");
+		model[2].init("resources/flat.obj");
 		for(size_t i=0; i<NUM_OBJECTS; i++) {
 			model[i].setupAttributeBuffers();
 		}
@@ -140,6 +141,9 @@ public:
 			modelRotate[i] = glm::mat4(1);
 			modelIncrement[i] = glm::rotate(glm::mat4(1), 0.02f, glm::vec3(0,1,0));
 			modelTranslate[i] = glm::translate(glm::mat4(1), -model[i].getCentroid());
+			if (i==2) {
+				modelTranslate[i] = glm::translate(glm::mat4(1), glm::vec3(0,-2,0));
+			}
 		}
 
 		lightRotating = false;
@@ -237,6 +241,7 @@ public:
 		//////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////
 		// spin model
+		
 		if(modelRotating) {
 			for (int i = 0; i<NUM_OBJECTS; i++) {
 				//modelRotate[i] = modelIncrement[i] * modelRotate[i];
