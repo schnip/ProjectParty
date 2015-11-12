@@ -10,7 +10,7 @@ PROGRAM=a.out
 DEL=rm -rf
 LIBS=-lm -ldl -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lGLU -lGL
 WARN=-w
-OP=-O0
+OP=-O3
 FLAGS= $(WARN) $(OP)
 
 # setup object list
