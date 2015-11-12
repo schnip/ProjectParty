@@ -97,7 +97,7 @@ public:
 		//////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////
 		for (int i = 0; i < ARRAY_SIZE; i++){
-			lightPositions[i] = glm::vec4((center + (toMax*2.0f)), 1);
+			lightPositions[i] = glm::vec4((center + (toMax*2.0f)), 1);//2.0f
 			lightPositions[i][1] = (center + (toMax*6.0f))[1];
 		}
 
@@ -182,14 +182,14 @@ public:
 			beatTracker = 0;
 			if (lightStatus == 0) {
 				lightStatus++;
-				lightIntensity = glm::vec4(0, 1, 0, 0);
+				lightIntensity = glm::vec4(1, 1, 1, 0);//0100
 			}
 			else if (lightStatus == 1) {
-				lightIntensity = glm::vec4(0,0,1,0);
+				lightIntensity = glm::vec4(1,1,1,0);//0010
 				lightStatus++;
 			}
 			else if (lightStatus == 2) {
-				lightIntensity = glm::vec4(1, 0, 0, 0);
+				lightIntensity = glm::vec4(1, 1, 1, 0);//1000
 				lightStatus = 0;
 			}
 		}
