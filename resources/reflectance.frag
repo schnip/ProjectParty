@@ -5,7 +5,7 @@ uniform mat4 C;   //camera matrix
 uniform mat4 M;   //modelview matrix: M = C * mR * mT
 uniform mat3 N;   //inverse transpose of upperleft 3x3 of M
 
-uniform vec4 Li; //light intensity vector
+//uniform vec4 Li; //light intensity vector
 
 
 uniform vec4 lightPosOne;
@@ -14,6 +14,10 @@ uniform vec4 lightPosThree;
 uniform mat4 LrOne;
 uniform mat4 LrTwo;
 uniform mat4 LrThree;
+
+uniform vec4 LiOne;
+uniform vec4 LiTwo;
+uniform vec4 LiThree;
 
 uniform vec4 lightPositions;
 uniform mat4 Lvs;
@@ -34,14 +38,13 @@ in vec4 shadowPosThree;
 
 layout(location = 0) out vec4 fragColor;
 
-vec4 reflectance(in vec3 pos, in vec3 norm, in vec3 colorIn, in float visibilityFactor, vec4 lightPos, mat4 Lr)
+vec4 reflectance(in vec3 pos, in vec3 norm, in vec3 colorIn, in float visibilityFactor, vec4 lightPos, mat4 Lr, vec4 Li)
 {
 	float alpha = 10;
 	vec4 p = vec4(pos, 1);
 	vec4 lp = lightPos;
 	vec4 n = normalize(vec4(norm,0));
 	vec4 c = vec4(0);
-	//vec4 Li = vec4(1);
 	vec4 ka = vec4(0.05);//ambient
 	//vec4 kd = vec4(0.2, 0.2, 0.8, 1);
 	vec4 kd = smoothColor;
@@ -128,9 +131,9 @@ void main()
 
 	float visibilityFactor = (visibilityFactorOne + visibilityFactorTwo + visibilityFactorThree)/3;
 	
-	vec4 reflectanceOne = reflectance(smoothPos, smoothNorm, smoothColor.xyz, visibilityFactorOne, lightPosOne, LrOne);
-	vec4 reflectanceTwo = reflectance(smoothPos, smoothNorm, smoothColor.xyz, visibilityFactorTwo, lightPosTwo, LrTwo);
-	vec4 reflectanceThree = reflectance(smoothPos, smoothNorm, smoothColor.xyz, visibilityFactorThree, lightPosThree, LrThree);
+	vec4 reflectanceOne = reflectance(smoothPos, smoothNorm, smoothColor.xyz, visibilityFactorOne, lightPosOne, LrOne, LiOne);
+	vec4 reflectanceTwo = reflectance(smoothPos, smoothNorm, smoothColor.xyz, visibilityFactorTwo, lightPosTwo, LrTwo,LiTwo);
+	vec4 reflectanceThree = reflectance(smoothPos, smoothNorm, smoothColor.xyz, visibilityFactorThree, lightPosThree, LrThree,LiThree);
 
 
 	fragColor = (reflectanceOne + reflectanceTwo + reflectanceThree)/3;

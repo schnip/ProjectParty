@@ -129,6 +129,8 @@ private:
 				state.setRunning(false);
 			
 			//Music!
+			///////////////////////////
+			//////////////////////////
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::A)) {
 				currentSong.stop();
 				if (!currentSong.openFromFile("resources/Presenterator.ogg"))
@@ -136,6 +138,7 @@ private:
 				currentSong.setLoop(TRUE);
 				currentSong.play();
 				state.secondsPerBeat = 60.0 / 128.0;
+				state.songChoice = 0;
 			}
 
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::S)) {
@@ -145,6 +148,7 @@ private:
 				currentSong.setLoop(TRUE);
 				currentSong.play();
 				state.secondsPerBeat = 60.0 / 124.0;
+				state.songChoice = 1;
 			}
 
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::D)) {
@@ -154,8 +158,10 @@ private:
 				currentSong.setLoop(TRUE);
 				currentSong.play();
 				state.secondsPerBeat = 60.0 / 102.0;
+				state.songChoice = 2;
 			}
-
+			///////////////////////////////////
+			//////////////////////////////////
 			if((event.type == sf::Event::TextEntered) && (event.text.unicode == 'r'))
 				state.toggleModelRotate();
 			if((event.type == sf::Event::TextEntered) && (event.text.unicode == 't'))

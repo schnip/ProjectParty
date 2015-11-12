@@ -6,6 +6,10 @@
 #define NUM_OBJECTS 2
 const int ARRAY_SIZE = 3;
 
+const glm::vec4 lightPalletOne[ARRAY_SIZE] = { glm::vec4(1.0f, 0.271f, 0.0f, 0.0f), glm::vec4(0.5f, 1.0f, 0.0f, 0.0f), glm::vec4(0.251f, 0.878f, 0.924f, 0.0f) };
+const glm::vec4 lightPalletTwo[ARRAY_SIZE] = { glm::vec4(0.5f, 0.0f, 0.0f, 0.0f), glm::vec4(0.133f, .545f, .133f, 0.0f), glm::vec4(0.098f, .098f, .439f, 0.0f) };
+const glm::vec4 lightPalletThree[ARRAY_SIZE] = { glm::vec4(.863f, .078f, .235f, 0.0f), glm::vec4(.235f, .702f, .443f, 0.0f), glm::vec4(.541, .169f, .886f, 0.0f) };
+
 class WorldState
 {
 private:
@@ -29,14 +33,18 @@ public:
 
 	///////////////////
 	glm::vec4 lightPositions[ARRAY_SIZE];
-	glm::vec3 lightIntensities[ARRAY_SIZE];
+	glm::vec4 lightIntensities[ARRAY_SIZE];
 	glm::mat4 lightRotations[ARRAY_SIZE];
 	glm::mat4 lightIncrements[ARRAY_SIZE];
 	glm::mat4 lightViews[ARRAY_SIZE];
-	///////////////////
 
-	glm::vec4 lightIntensity;
-	glm::vec4 baseLightIntensity;
+	//glm::vec4 lightPalletOne[ARRAY_SIZE];
+	//glm::vec4 lightPalletTwo[ARRAY_SIZE];
+	//glm::vec4 lightPalletThree[ARRAY_SIZE];
+
+	glm::vec4 currentPallet[ARRAY_SIZE];
+	///////////////////
+	int songChoice;
 	
 	glm::mat4 modelRotate[NUM_OBJECTS];
 	glm::mat4 modelIncrement[NUM_OBJECTS];
@@ -64,7 +72,9 @@ public:
 	{
 		for(size_t i=0; i<NUM_TRACKED_FRAMES; i++)
 			frameTimes[i] = 0.0f;
-		
+		for (int i = 0; i < 4; i++) {
+			currentPallet[i] = lightPalletTwo[i];
+		}
 		running = true;
 
 		for(size_t i=0; i<NUM_OBJECTS; i++) {
@@ -96,16 +106,16 @@ public:
 		
 		//////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////
+
+
 		for (int i = 0; i < ARRAY_SIZE; i++){
 			lightPositions[i] = glm::vec4((center + (toMax*2.0f)), 1);//2.0f
 			lightPositions[i][1] = (center + (toMax*6.0f))[1];
 		}
 
-		//lightIntensities[0] = glm::vec3(1, 1, 1);
-		//lightIntensities[1] = glm::vec3(1, 1, 1);
-		//lightIntensities[2] = glm::vec3(1, 1, 1);
+		
 		for (int i = 0; i < ARRAY_SIZE; i++){
-			lightIntensities[i] = glm::vec3(1, 1, 1);
+			lightIntensities[i] = glm::vec4(1, 1, 1,0);
 		}
 
 		for (int i = 0; i < ARRAY_SIZE; i++){
@@ -121,8 +131,7 @@ public:
 
 		lightPos = glm::vec4((center+(toMax*2.0f)), 1);
 		lightPos[1] = (center+(toMax*6.0f))[1];
-		baseLightIntensity = glm::vec4(1, 0, 0, 0);
-		lightIntensity = baseLightIntensity;
+		songChoice = 1;
 
 		lightRotate = glm::mat4(1);
 		lightIncrement = glm::rotate(glm::mat4(1), -0.05f, glm::vec3(0,1,0));
@@ -174,7 +183,21 @@ public:
 	{
 		float elapsed = t - this->currentTime;
 		this->updateFrameTime(elapsed);
-		
+		if (songChoice == 0) {
+			for (int i = 0; i < 4; i++) {
+				currentPallet[i] = lightPalletOne[i];
+			}
+		}
+		else if (songChoice == 1) {
+			for (int i = 0; i < 4; i++) {
+				currentPallet[i] = lightPalletTwo[i];
+			}
+		}
+		else if (songChoice == 2) {
+			for (int i = 0; i < 4; i++) {
+				currentPallet[i] = lightPalletThree[i];
+			}
+		}
 		//Light chaning stuff
 		beatTracker = beatTracker + elapsed;
 		if (beatTracker >= secondsPerBeat) {
@@ -182,15 +205,24 @@ public:
 			beatTracker = 0;
 			if (lightStatus == 0) {
 				lightStatus++;
-				lightIntensity = glm::vec4(1, 1, 1, 0);//0100
+				lightIntensities[0] = currentPallet[0];
+				lightIntensities[1] = currentPallet[1];
+				lightIntensities[2] = currentPallet[2];
+				lightIntensities[3] = currentPallet[3];
 			}
 			else if (lightStatus == 1) {
-				lightIntensity = glm::vec4(1,1,1,0);//0010
 				lightStatus++;
+				lightIntensities[0] = currentPallet[1];
+				lightIntensities[1] = currentPallet[2];
+				lightIntensities[2] = currentPallet[0];
+				lightIntensities[3] = currentPallet[3];
 			}
 			else if (lightStatus == 2) {
-				lightIntensity = glm::vec4(1, 1, 1, 0);//1000
 				lightStatus = 0;
+				lightIntensities[0] = currentPallet[2];
+				lightIntensities[1] = currentPallet[0];
+				lightIntensities[2] = currentPallet[1];
+				lightIntensities[3] = currentPallet[3];
 			}
 		}
 
@@ -247,9 +279,7 @@ public:
 	
 	glm::vec4 getLightPos() const
 	{ return this->lightPos; }
-	
-	glm::vec4 getLightIntensity() const
-	{ return this->lightIntensity; }
+
 	
 	glm::mat4 getCameraMatrix() const
 	{ return glm::lookAt(cameraPos, cameraLook, cameraUp); }
@@ -287,7 +317,7 @@ public:
 	}
 
 
-	glm::vec3 getLightIntensity(int i)const
+	glm::vec4 getLightIntensity(int i)const
 	{
 		return lightIntensities[i];
 	}

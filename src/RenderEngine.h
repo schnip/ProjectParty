@@ -424,7 +424,7 @@ private:
 		glm::vec4 camPos = state.getCameraPos();
 		//glm::mat4 Lr = state.getLightRotate();
 		//glm::mat4 Lv = state.getLightViewMatrix();
-		glm::vec4 Li = state.getLightIntensity();
+		//glm::vec4 Li = state.getLightIntensity();
 		glm::mat4 Lp;
 		Lp = glm::perspective(1.0f, fov, _near, _far);
 		Lp = glm::ortho(-15.0f, 15.0f, -15.0f, 15.0f, 0.0f, 50.0f);
@@ -434,6 +434,7 @@ private:
 		glm::vec4 lightPositions[ARRAY_SIZE];
 		glm::mat4 Lvs[ARRAY_SIZE];
 		glm::mat4 Lrs[ARRAY_SIZE];
+		//glm::vec4 Lis[ARRAY_SIZE];
 
 		for (int i = 0; i < ARRAY_SIZE; i++){
 			lightPositions[i] = state.getLightPos(i);
@@ -454,6 +455,10 @@ private:
 		glm::mat4 LvOne = Lvs[0];
 		glm::mat4 LvTwo = Lvs[1];
 		glm::mat4 LvThree = Lvs[2];
+		glm::vec4 LiOne = state.getLightIntensity(0);
+		glm::vec4 LiTwo = state.getLightIntensity(1);
+		glm::vec4 LiThree = state.getLightIntensity(2);
+
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//hacky light source size change
@@ -473,7 +478,7 @@ private:
 		glUniformMatrix3fv(glGetUniformLocation(shaderId, "N"), 1, GL_FALSE, &N[0][0]);
 		glUniformMatrix4fv(glGetUniformLocation(shaderId, "Lr"), 1, GL_FALSE, &Lr[0][0]);
 		glUniformMatrix4fv(glGetUniformLocation(shaderId, "Lv"), 1, GL_FALSE, &Lv[0][0]);
-		glUniform4fv(glGetUniformLocation(shaderId, "Li"), 1, &Li[0]);
+		//glUniform4fv(glGetUniformLocation(shaderId, "Li"), 1, &Li[0]);
 		glUniform4fv(glGetUniformLocation(shaderId, "lightPos"), 1, &lightPos[0]);
 		glUniform4fv(glGetUniformLocation(shaderId, "camPos"), 1, &camPos[0]);
 
@@ -494,6 +499,10 @@ private:
 		glUniformMatrix4fv(glGetUniformLocation(shaderId, "LrThree"), 1, GL_FALSE, &LrThree[0][0]);
 		glUniformMatrix4fv(glGetUniformLocation(shaderId, "LvThree"), 1, GL_FALSE, &LvThree[0][0]);
 		glUniform4fv(glGetUniformLocation(shaderId, "lightPosThree"), 1, &lightPosThree[0]);
+
+		glUniform4fv(glGetUniformLocation(shaderId, "LiOne"), 1, &LiOne[0]);
+		glUniform4fv(glGetUniformLocation(shaderId, "LiTwo"), 1, &LiTwo[0]);
+		glUniform4fv(glGetUniformLocation(shaderId, "LiThree"), 1, &LiThree[0]);
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
