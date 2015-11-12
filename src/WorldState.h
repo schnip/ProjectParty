@@ -80,7 +80,7 @@ public:
 		for(size_t i=0; i<NUM_OBJECTS; i++) {
 			model[i] = Model();
 		}
-		model[0].init("resources/material_test.obj");
+		model[0].init("resources/teapot.obj");
 		model[1].init("resources/teapot.obj");
 		model[2].init("resources/flat.obj");
 		for(size_t i=0; i<NUM_OBJECTS; i++) {
