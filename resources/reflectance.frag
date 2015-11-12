@@ -1,30 +1,40 @@
 #version 330
 
-uniform vec4 Ka;
-uniform vec4 Kd;
-uniform vec4 Ks;
-uniform vec4 specAlpha;
-
 uniform mat4 P;   //projection matrix
 uniform mat4 C;   //camera matrix
 uniform mat4 M;   //modelview matrix: M = C * mR * mT
 uniform mat3 N;   //inverse transpose of upperleft 3x3 of M
-uniform mat4 Lr;  //light rotation matrix
-uniform vec4 lightPos;    //light position
-uniform vec4 camPos;      //camera position
+
 uniform vec4 Li; //light intensity vector
 
-uniform sampler2D texId;
-//uniform sampler2DRect texId;
+
+uniform vec4 lightPosOne;
+uniform vec4 lightPosTwo;
+uniform vec4 lightPosThree;
+uniform mat4 LrOne;
+uniform mat4 LrTwo;
+uniform mat4 LrThree;
+
+uniform vec4 lightPositions;
+uniform mat4 Lvs;
+uniform mat4 Lrs;
+
+uniform vec4 camPos;      //camera position
+
+uniform sampler2D texIdOne;
+uniform sampler2D texIdTwo;
+uniform sampler2D texIdThree;
 
 in vec4 smoothColor;
 in vec3 smoothPos;
 in vec3 smoothNorm;
-in vec4 shadowPos;
+in vec4 shadowPosOne;
+in vec4 shadowPosTwo;
+in vec4 shadowPosThree;
 
 layout(location = 0) out vec4 fragColor;
 
-vec4 reflectance(in vec3 pos, in vec3 norm, in vec3 colorIn, in float visibilityFactor)
+vec4 reflectance(in vec3 pos, in vec3 norm, in vec3 colorIn, in float visibilityFactor, vec4 lightPos, mat4 Lr)
 {
 	float alpha = 10;
 	vec4 p = vec4(pos, 1);
@@ -32,9 +42,10 @@ vec4 reflectance(in vec3 pos, in vec3 norm, in vec3 colorIn, in float visibility
 	vec4 n = normalize(vec4(norm,0));
 	vec4 c = vec4(0);
 	//vec4 Li = vec4(1);
-	vec4 ka = Ka;
-	vec4 kd = Kd;
-	vec4 ks = Ks;
+	vec4 ka = vec4(0.05);//ambient
+	//vec4 kd = vec4(0.2, 0.2, 0.8, 1);
+	vec4 kd = smoothColor;
+	vec4 ks = vec4(.8);
 
 	lp = C*Lr*lp;
 	p = M*p;
@@ -42,7 +53,7 @@ vec4 reflectance(in vec3 pos, in vec3 norm, in vec3 colorIn, in float visibility
 
 	// diffuse coefficent
 	vec4 l = normalize(lp - p);
-	float d = clamp(dot(l,n), 0, 1) * visibilityFactor;
+	float d = clamp(dot(l,n), 0, 1) * visibilityFactor;////////
 
 	// specular coefficient
 	vec4 v = normalize(c-p);
@@ -77,34 +88,50 @@ float getBias()
 	//TODO: could do more complex stuff related to normals
 }
 
-vec4 getShadowPoint()
+vec4 getShadowPoint(vec4 shadowPos)
 {
 	//TODO: adjust for the perspective divide and bias
 	vec4 shp = shadowPos;
+	shp = shp/shp.w;
+	shp.z = shp.z - getBias();
 	return shp;
 }
 
-float getVisibility()
+float getVisibility(sampler2D texId,vec4 shadowPos)
 {
 	float visibilityFactor = 1.0;
-	vec4 shadowPoint = getShadowPoint();
-	
+	vec4 shadowPoint = getShadowPoint(shadowPos);
 	//TODO lookup the distance in the shapow map, get surface and occlusion distance
-	float surfaceDistance = 1.0;
-	float occlusionDistance = 1.0;
+
+	vec4 shadowTexel = texture(texId, shadowPoint.xy);
+	float surfaceDistance = shadowPoint.z;
+	float occlusionDistance = shadowTexel.z;
 	
 	float diff = occlusionDistance - surfaceDistance;
+
 	fragColor = redBlueMap(diff, vec3(-0.1, 0, 0.1));
 	
-	if(diff < 0)
-		return 0.3;
+
+	if(diff < 0){
+		return  0.0;
+	}
+
+	
 	return 1.0;
 }
 
 void main()
 {
-	float visibilityFactor = getVisibility();
-	
-	fragColor = reflectance(smoothPos, smoothNorm, smoothColor.xyz, visibilityFactor) + vec4(.1,0,.1,0);
-}
+	float visibilityFactorOne = getVisibility(texIdOne, shadowPosOne);
+	float visibilityFactorTwo = getVisibility(texIdTwo, shadowPosTwo);
+	float visibilityFactorThree = getVisibility(texIdThree, shadowPosThree);
 
+	float visibilityFactor = (visibilityFactorOne + visibilityFactorTwo + visibilityFactorThree)/3;
+	
+	vec4 reflectanceOne = reflectance(smoothPos, smoothNorm, smoothColor.xyz, visibilityFactorOne, lightPosOne, LrOne);
+	vec4 reflectanceTwo = reflectance(smoothPos, smoothNorm, smoothColor.xyz, visibilityFactorTwo, lightPosTwo, LrTwo);
+	vec4 reflectanceThree = reflectance(smoothPos, smoothNorm, smoothColor.xyz, visibilityFactorThree, lightPosThree, LrThree);
+
+
+	fragColor = (reflectanceOne + reflectanceTwo + reflectanceThree)/3;
+}

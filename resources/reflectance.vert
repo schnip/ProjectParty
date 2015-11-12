@@ -1,19 +1,33 @@
 #version 330
+const int ARRAY_SIZE = 2;
 
-uniform vec4 Ka;
-uniform vec4 Kd;
-uniform vec4 Ks;
-uniform vec4 specAlpha;
 
 uniform mat4 P;  //projection matrix
 uniform mat4 Lp;  //light projection matrix
 uniform mat4 mT;
 uniform mat4 mR;
 uniform mat4 M;  //modelview matrix: M = C * mR * mT
-uniform mat4 Lv; //light view matrix
-uniform mat4 Lr;  //light rotation matrix
+
+uniform vec3 lightID;	//tells which light to use all idecies are the same
 
 uniform vec4 lightPos;
+uniform mat4 Lv; //light view matrix
+uniform mat4 Lr;  //light rotation matrix
+////
+uniform vec4 lightPosOne;
+uniform mat4 LvOne;
+uniform mat4 LrOne;
+uniform vec4 lightPosTwo;
+uniform mat4 LvTwo; 
+uniform mat4 LrTwo;
+uniform vec4 lightPosThree;
+uniform mat4 LvThree; 
+uniform mat4 LrThree;
+
+uniform vec4 lightPositions[ARRAY_SIZE];
+uniform mat4 Lvs[ARRAY_SIZE];
+uniform mat4 Lrs[ARRAY_SIZE];
+////
 
 layout(location = 0) in vec3 pos;
 layout(location = 1) in vec3 colorIn;
@@ -21,9 +35,11 @@ layout(location = 1) in vec3 colorIn;
 out vec3 smoothPos;
 out vec3 smoothNorm;
 out vec4 smoothColor;
-out vec4 shadowPos;
+out vec4 shadowPosOne;
+out vec4 shadowPosTwo;
+out vec4 shadowPosThree;
 
-vec4 positionInLightView(vec3 pos)
+vec4 positionInLightView(vec3 pos, mat4 LLvv)//LLVV is a standin for Lv names are hard
 {
 	mat4 offset =
 	mat4(
@@ -33,8 +49,10 @@ vec4 positionInLightView(vec3 pos)
 		 0.5, 0.5, 0.5, 1.0);
 	
 	//TODO: move vertex, put in light view
+	vec4 vertPos = mR * mT * vec4(pos,1);
+	vertPos = offset * Lp * LLvv * vertPos;
 	
-	return vec4(pos, 1);
+	return vertPos;
 }
 
 void main()
@@ -42,8 +60,9 @@ void main()
 	smoothPos = pos;
 	smoothNorm = colorIn*2 - 1;
 	smoothColor = vec4(colorIn, 1);
-	shadowPos = positionInLightView(pos);
-	
+	shadowPosOne = positionInLightView(pos,LvOne);
+	shadowPosTwo = positionInLightView(pos,LvTwo);
+	shadowPosThree = positionInLightView(pos,LvThree);
 	vec4 p = vec4(pos, 1);
 	gl_Position = P*M*p;
 }

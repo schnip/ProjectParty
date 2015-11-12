@@ -6,16 +6,19 @@ uniform mat4 mR;
 uniform mat4 M;  //modelview matrix: M = C * mR * mT
 uniform mat4 Lv; //light view matrix
 uniform mat4 Lr;  //light rotation matrix
+uniform vec3 lightID;	//tells which light to use, all idecies are the same
 
 uniform vec4 lightPos;
 
 layout(location = 0) in vec3 pos;
 layout(location = 1) in vec3 colorIn;
 
+
+
 vec4 positionInLightView(vec3 pos)
 {
 	//TODO: move vertex, put in light view
-	vec4 vertPos = mR * mT * vec4(pos, 1);
+	vec4 vertPos = mR * mT * vec4(pos,1);
 	vertPos = Lp * Lv * vertPos;
 
 	return vertPos;
@@ -24,4 +27,5 @@ vec4 positionInLightView(vec3 pos)
 void main()
 {
 	gl_Position = positionInLightView(pos);
+	
 }

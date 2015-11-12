@@ -4,6 +4,7 @@
 
 #define NUM_TRACKED_FRAMES 10
 #define NUM_OBJECTS 2
+const int ARRAY_SIZE = 3;
 
 class WorldState
 {
@@ -23,11 +24,20 @@ public:
 	glm::vec3 cameraUp;
 	
 	glm::vec4 lightPos;
+	glm::mat4 lightRotate;
+	glm::mat4 lightIncrement;
+
+	///////////////////
+	glm::vec4 lightPositions[ARRAY_SIZE];
+	glm::vec3 lightIntensities[ARRAY_SIZE];
+	glm::mat4 lightRotations[ARRAY_SIZE];
+	glm::mat4 lightIncrements[ARRAY_SIZE];
+	glm::mat4 lightViews[ARRAY_SIZE];
+	///////////////////
+
 	glm::vec4 lightIntensity;
 	glm::vec4 baseLightIntensity;
 	
-	glm::mat4 lightRotate;
-	glm::mat4 lightIncrement;
 	glm::mat4 modelRotate[NUM_OBJECTS];
 	glm::mat4 modelIncrement[NUM_OBJECTS];
 	glm::mat4 modelTranslate[NUM_OBJECTS];
@@ -84,6 +94,31 @@ public:
 		cameraLook = glm::vec3(0,0,0);
 		cameraUp = glm::vec3(0,1,0);
 		
+		//////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////
+		for (int i = 0; i < ARRAY_SIZE; i++){
+			lightPositions[i] = glm::vec4((center + (toMax*2.0f)), 1);
+			lightPositions[i][1] = (center + (toMax*6.0f))[1];
+		}
+
+		//lightIntensities[0] = glm::vec3(1, 1, 1);
+		//lightIntensities[1] = glm::vec3(1, 1, 1);
+		//lightIntensities[2] = glm::vec3(1, 1, 1);
+		for (int i = 0; i < ARRAY_SIZE; i++){
+			lightIntensities[i] = glm::vec3(1, 1, 1);
+		}
+
+		for (int i = 0; i < ARRAY_SIZE; i++){
+			lightRotations[i] = glm::mat4(1);
+		}
+
+		lightIncrements[0] = glm::rotate(glm::mat4(1), -.0314159f, glm::vec3(0, 1, 0));//.05
+		lightIncrements[1] = glm::rotate(glm::mat4(1), -.0161803f, glm::vec3(0, 1, 0));//.01
+		lightIncrements[2] = glm::rotate(glm::mat4(1), -.0271828f, glm::vec3(0, 1, 0));//.03
+
+		//////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////
+
 		lightPos = glm::vec4((center+(toMax*2.0f)), 1);
 		lightPos[1] = (center+(toMax*6.0f))[1];
 		baseLightIntensity = glm::vec4(1, 0, 0, 0);
@@ -159,10 +194,16 @@ public:
 			}
 		}
 
-		// spin light
-		if(lightRotating)
-			lightRotate = lightIncrement * lightRotate;
-		
+		//////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////
+		//spin light
+		if (lightRotating){
+			for (int i = 0; i < ARRAY_SIZE; i++){
+				lightRotations[i] = lightIncrements[i] * lightRotations[i];
+			}
+		}
+		//////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////
 		// spin model
 		if(modelRotating) {
 			for (int i = 0; i<NUM_OBJECTS; i++) {
@@ -177,8 +218,15 @@ public:
 		//if (modelRotating)
 		//modelTranslate[1] = glm::translate(glm::mat4(1), glm::vec3(elapsed,0,0))*modelTranslate[1];
 		
-		glm::vec3 currentLightPos = glm::vec3(lightRotate*lightPos);
-		lightView = glm::lookAt(currentLightPos, cameraLook, cameraUp);
+		//////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////
+		glm::vec3 currentLightPos;
+		for (int i = 0; i < ARRAY_SIZE; i++){
+			currentLightPos = glm::vec3(lightRotations[i] * lightPositions[i]);
+			lightViews[i] = glm::lookAt(currentLightPos, cameraLook, cameraUp);
+		}
+		//////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////
 		
 		this->currentTime = t;
 	}
@@ -222,6 +270,33 @@ public:
 		printf("%f\n", d);
 		cameraPos = cameraPos * d;
 	}
+
+	///////////////////////////////////////
+	///////////////////////////////////////
+	glm::mat4 getLightRotation(int i) const
+	{
+		return lightRotations[i];
+	}
+
+
+	glm::vec4 getLightPos(int i) const
+	{
+		return lightPositions[i];
+	}
+
+
+	glm::vec3 getLightIntensity(int i)const
+	{
+		return lightIntensities[i];
+	}
+
+
+	glm::mat4 getLightView(int i) const
+	{
+		return lightViews[i];
+	}
+	///////////////////////////////////////
+	///////////////////////////////////////
 };
 
 #endif
