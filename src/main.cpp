@@ -80,7 +80,7 @@ public:
 			printf("Not playing\n");
 
 		while (state.isRunning())
-		{			
+		{	
 			window->setActive();
 			float currentTime = c.getElapsedTime().asSeconds();
 			float sinceLastFrame = currentTime - lastFrame;

@@ -194,9 +194,9 @@ public:
 
 		sid = 0;
 
-		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glUseProgram(shaderProg[sid]);
 		//uploadUniforms(shaderProg[shaderId], state);
@@ -420,11 +420,7 @@ private:
 		glm::mat4 C = state.getCameraMatrix();
 		glm::mat4 M = C*mR*mT;
 		glm::mat3 N = glm::inverseTranspose(glm::mat3(M));
-		//glm::vec4 lightPos = state.getLightPos();
 		glm::vec4 camPos = state.getCameraPos();
-		//glm::mat4 Lr = state.getLightRotate();
-		//glm::mat4 Lv = state.getLightViewMatrix();
-		//glm::vec4 Li = state.getLightIntensity();
 		glm::mat4 Lp;
 		Lp = glm::perspective(1.0f, fov, _near, _far);
 		Lp = glm::ortho(-15.0f, 15.0f, -15.0f, 15.0f, 0.0f, 50.0f);
@@ -463,7 +459,7 @@ private:
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//hacky light source size change
 		GLfloat maxDis = state.getModel(0).getDimension()[2] * 3;
-		GLfloat distScale = 1.0f / (glm::length(state.getLightRotation(0)*lightPos - camPos) / maxDis);
+		GLfloat distScale = 1.0f / (glm::length(state.getLightRotation(0)*state.getLightPos(0) - camPos) / maxDis);
 		glPointSize(glm::mix(1.0f, 10.0f, distScale));
 
 		//printf("cam %f %f %f\n", camPos[0], camPos[1], camPos[2]);
@@ -476,10 +472,10 @@ private:
 		glUniformMatrix4fv(glGetUniformLocation(shaderId, "mT"), 1, GL_FALSE, &mT[0][0]);
 		glUniformMatrix4fv(glGetUniformLocation(shaderId, "M"), 1, GL_FALSE, &M[0][0]);
 		glUniformMatrix3fv(glGetUniformLocation(shaderId, "N"), 1, GL_FALSE, &N[0][0]);
-		glUniformMatrix4fv(glGetUniformLocation(shaderId, "Lr"), 1, GL_FALSE, &Lr[0][0]);
-		glUniformMatrix4fv(glGetUniformLocation(shaderId, "Lv"), 1, GL_FALSE, &Lv[0][0]);
+		//glUniformMatrix4fv(glGetUniformLocation(shaderId, "Lr"), 1, GL_FALSE, &Lr[0][0]);
+		//glUniformMatrix4fv(glGetUniformLocation(shaderId, "Lv"), 1, GL_FALSE, &Lv[0][0]);
 		//glUniform4fv(glGetUniformLocation(shaderId, "Li"), 1, &Li[0]);
-		glUniform4fv(glGetUniformLocation(shaderId, "lightPos"), 1, &lightPos[0]);
+		//glUniform4fv(glGetUniformLocation(shaderId, "lightPos"), 1, &lightPos[0]);
 		glUniform4fv(glGetUniformLocation(shaderId, "camPos"), 1, &camPos[0]);
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

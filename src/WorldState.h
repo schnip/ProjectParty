@@ -110,11 +110,18 @@ public:
 		//////////////////////////////////////////////////////////////////////////////
 
 
-		for (int i = 0; i < ARRAY_SIZE; i++){
-			lightPositions[i] = glm::vec4((center + (toMax*2.0f)), 1);//2.0f
-			lightPositions[i][1] = (center + (toMax*6.0f))[1];
-		}
+//		for (int i = 0; i < ARRAY_SIZE; i++){
+//			lightPositions[i] = glm::vec4((center + (toMax*2.0f)), 1);//2.0f
+//			lightPositions[i][1] = (center + (toMax*6.0f))[1];
+//		}
+		lightPositions[0] = glm::vec4((center + (toMax*2.0f)), 1)+ glm::vec4(-10,5,-10,0);//2.0f
+		lightPositions[0][1] = (center + (toMax*6.0f))[1];
 
+		lightPositions[1] = glm::vec4((center + (toMax*2.0f)), 1)+ glm::vec4(0,5, 0, 0);//2.0f
+		lightPositions[1][1] = (center + (toMax*6.0f))[1];
+
+		lightPositions[2] = glm::vec4((center + (toMax*2.0f)), 1) + glm::vec4(0, 5, 0, 0);//2.0f
+		lightPositions[2][1] = (center + (toMax*6.0f))[1];
 		
 		for (int i = 0; i < ARRAY_SIZE; i++){
 			lightIntensities[i] = glm::vec4(1, 1, 1,0);
