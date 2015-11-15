@@ -411,7 +411,7 @@ private:
 		glm::vec3 dim = state.getModel(0).getDimension();
 		float maxDim = std::max(dim[0], std::max(dim[1], dim[2]));
 		_near = maxDim*0.1f;
-		_far  = maxDim*3.0f;
+		_far  = maxDim*50.0f;
 		fov = 0.9f;
 		
 		glm::mat4 P = glm::perspective(1.0f, fov, _near, _far);
