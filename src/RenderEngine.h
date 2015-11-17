@@ -343,7 +343,7 @@ public:
 
 private:
 	bool initialized;
-	GLuint shaderProg[3];
+	GLuint shaderProg[4];
 	GLuint vertexArray;
 	GLuint quadVertexArray;
 	GLuint lightArray;
@@ -394,6 +394,10 @@ private:
 		char const * shdVPath = "resources/shadowMap.vert";
 		char const * shdFPath = "resources/shadowMap.frag";
 		shaderProg[2] = ShaderManager::shaderFromFile(&shdVPath, &shdFPath, 1, 1);
+
+		char const * postVPath = "resources/texture.vert";
+		char const * postFPath = "resources/texture.frag";
+		shaderProg[3] = ShaderManager::shaderFromFile(&postVPath, &postFPath, 1, 1);
 
 		checkGLError("shader");
 	}
