@@ -3,7 +3,7 @@
 #include "Model.h"
 
 #define NUM_TRACKED_FRAMES 10
-#define NUM_OBJECTS 4
+#define NUM_OBJECTS 6
 const int ARRAY_SIZE = 3;
 
 const glm::vec4 lightPalletOne[ARRAY_SIZE] = { glm::vec4(1.0f, 0.271f, 0.0f, 0.0f), glm::vec4(0.5f, 1.0f, 0.0f, 0.0f), glm::vec4(0.251f, 0.878f, 0.924f, 0.0f) };
@@ -84,6 +84,8 @@ public:
 		model[1].init("resources/teapot.obj");
 		model[2].init("resources/flat.obj");
 		model[3].init("resources/material_test.obj");
+		model[4].init("resources/teapot.obj");
+		model[5].init("resources/teapot.obj");
 		for(size_t i=0; i<NUM_OBJECTS; i++) {
 			model[i].setupAttributeBuffers();
 		}
@@ -157,6 +159,12 @@ public:
 			}
 			if (i==0) {
 				modelTranslate[i] = glm::translate(glm::mat4(1), glm::vec3(-3,-2,4090));
+			}
+			if (i==4) {
+				modelTranslate[i] = glm::translate(glm::mat4(1), glm::vec3(-3,2,-3));
+			}
+			if (i==5) {
+				modelTranslate[i] = glm::translate(glm::mat4(1), glm::vec3(3,2,3));
 			}
 		}
 
