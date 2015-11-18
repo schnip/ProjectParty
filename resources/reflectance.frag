@@ -19,9 +19,7 @@ uniform vec4 LiOne;
 uniform vec4 LiTwo;
 uniform vec4 LiThree;
 
-uniform vec4 lightPositions;
-uniform mat4 Lvs;
-uniform mat4 Lrs;
+
 
 uniform vec4 camPos;      //camera position
 
@@ -138,5 +136,6 @@ void main()
 
 
 	fragColor = (reflectanceOne + reflectanceTwo + reflectanceThree)/3;
-	//fragColor = vec4(1,1,1,0) - fragColor;
+	//fragColor = vec4(1,1,1,0) - fragColor;\
+	//fragColor = vec4( texture(texIdTwo, gl_FragCoord.xy/512.0).z );
 }
