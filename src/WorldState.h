@@ -72,7 +72,7 @@ public:
 	{
 		for(size_t i=0; i<NUM_TRACKED_FRAMES; i++)
 			frameTimes[i] = 0.0f;
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < ARRAY_SIZE; i++) {
 			currentPallet[i] = lightPalletTwo[i];
 		}
 		running = true;
@@ -210,17 +210,17 @@ public:
 		float elapsed = t - this->currentTime;
 		this->updateFrameTime(elapsed);
 		if (songChoice == 0) {
-			for (int i = 0; i < 4; i++) {
+			for (int i = 0; i < ARRAY_SIZE; i++) {
 				currentPallet[i] = lightPalletOne[i];
 			}
 		}
 		else if (songChoice == 1) {
-			for (int i = 0; i < 4; i++) {
+			for (int i = 0; i < ARRAY_SIZE; i++) {
 				currentPallet[i] = lightPalletTwo[i];
 			}
 		}
 		else if (songChoice == 2) {
-			for (int i = 0; i < 4; i++) {
+			for (int i = 0; i < ARRAY_SIZE; i++) {
 				currentPallet[i] = lightPalletThree[i];
 			}
 		}
@@ -234,21 +234,21 @@ public:
 				lightIntensities[0] = currentPallet[0];
 				lightIntensities[1] = currentPallet[1];
 				lightIntensities[2] = currentPallet[2];
-				lightIntensities[3] = currentPallet[3];
+				//lightIntensities[3] = currentPallet[3];
 			}
 			else if (lightStatus == 1) {
 				lightStatus++;
 				lightIntensities[0] = currentPallet[1];
 				lightIntensities[1] = currentPallet[2];
 				lightIntensities[2] = currentPallet[0];
-				lightIntensities[3] = currentPallet[3];
+				//lightIntensities[3] = currentPallet[3];
 			}
 			else if (lightStatus == 2) {
 				lightStatus = 0;
 				lightIntensities[0] = currentPallet[2];
 				lightIntensities[1] = currentPallet[0];
 				lightIntensities[2] = currentPallet[1];
-				lightIntensities[3] = currentPallet[3];
+				//lightIntensities[3] = currentPallet[3];
 			}
 		}
 

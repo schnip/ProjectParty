@@ -426,7 +426,7 @@ private:
 		glm::mat3 N = glm::inverseTranspose(glm::mat3(M));
 		glm::vec4 camPos = state.getCameraPos();
 		glm::mat4 Lp;
-		Lp = glm::perspective(1.0f, fov, _near, _far);
+		//Lp = glm::perspective(1.0f, fov, _near, _far);
 		Lp = glm::ortho(-15.0f, 15.0f, -15.0f, 15.0f, 0.0f, 50.0f);
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
