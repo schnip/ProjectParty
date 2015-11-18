@@ -138,4 +138,5 @@ void main()
 
 
 	fragColor = (reflectanceOne + reflectanceTwo + reflectanceThree)/3;
+	//fragColor = vec4(1,1,1,0) - fragColor;
 }
