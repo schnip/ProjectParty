@@ -337,6 +337,41 @@ public:
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Random copying from micah code
+				//framebuffer
+		glGenFramebuffers(1, &frameBuffer);
+		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+		
+		//make renderbuffer for depth, attach
+		glGenRenderbuffers(1, &renderBuffer);
+		glBindRenderbuffer(GL_RENDERBUFFER, renderBuffer);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, xSize, ySize);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderBuffer);
+		
+		//make texture
+		glGenTextures(1, &renderTexture);
+		glBindTexture(GL_TEXTURE_2D, renderTexture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, xSize, ySize, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+//		glBindTexture(GL_TEXTURE_RECTANGLE, renderTexture);
+//		glTexImage2D(GL_TEXTURE_RECTANGLE, 0, GL_RGBA, xSize, ySize, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+//		glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+//		glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+		//attach texture to framebuffer
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, renderTexture, 0);
+		GLenum colorBuffer = GL_COLOR_ATTACHMENT0;
+		glDrawBuffers(1, &colorBuffer);
+		
+		if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+			fprintf(stderr, "Frame buffer setup failed\n");
+			exit(3);
+		}
+		
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		
+		checkGLError("frame buffer");
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
