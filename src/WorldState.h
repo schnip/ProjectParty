@@ -155,6 +155,9 @@ public:
 			if (i==1) {
 				modelTranslate[i] = glm::translate(glm::mat4(1), glm::vec3(-3,-2,4));
 			}
+			if (i==0) {
+				modelTranslate[i] = glm::translate(glm::mat4(1), glm::vec3(-3,-2,4090));
+			}
 		}
 
 		lightRotating = false;
