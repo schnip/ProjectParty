@@ -32,6 +32,29 @@ smooth in vec4 smoothColor;
 //out vec4 fragColor;
 layout(location = 0) out vec4 fragColor;
 
+vec2 res = vec2(resolution);
+vec2 fragCoord = gl_FragCoord.xy;
+vec2 texCoord = fragCoord/res;
+
+vec4 blur()
+{
+	//blur kernel
+	vec4 blurColor = vec4(0);
+	int kernelSize = 5;
+	float scale = kernelSize*4*kernelSize;
+	for(int x=-kernelSize; x<=kernelSize; x++)
+	{
+		for(int y=-kernelSize; y<=kernelSize; y++)
+		{
+			vec2 o = vec2(x,y);
+			vec2 kCoord = (fragCoord+o)/res;
+			blurColor += texture(texId, kCoord);
+		}
+	}
+	blurColor = blurColor / scale;
+	return blurColor;
+}
+
 void main()
 {
 	fragColor = smoothColor;
@@ -40,5 +63,5 @@ void main()
 	vec2 texCoord = fragCoord/res;
 	fragColor = vec4(texCoord, 1, 1);
 
-
+	fragColor = blur();
 }
