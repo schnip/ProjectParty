@@ -177,7 +177,8 @@ public:
 
 #pragma region activate and bind shadowRenderTextureThree	
 		/////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////
+		///////////////
+		//////////////////////////////////////////////////////////////
 		glActiveTexture(GL_TEXTURE0 + texId + 2);
 		glBindTexture(TEX_TYPE, shadowRenderTextureThree);
 		glUniform1i(glGetUniformLocation(shaderProg[sid], "texIdThree"), texId + 2);
@@ -188,7 +189,15 @@ public:
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+		sid = 0;
 
+		//King stuff
+
+		glActiveTexture(GL_TEXTURE0 + texId + 3);
+		glBindTexture(TEX_TYPE, wnTexture[0]);
+		glUniform1i(glGetUniformLocation(shaderProg[sid], "wnTexId"), texId + 3);
+
+		//King stuff
 
 
 
@@ -400,6 +409,43 @@ public:
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
+	//king stuff
+	void setupTextures() {
+		glGenTextures(1, wnTexture);
+
+		sf::Image image;
+
+		char const * imgPath = "resources/checkerboard.png";
+		if (!image.loadFromFile(imgPath)) {
+			fprintf(stderr, "Could not load image");
+		}
+		int texSizeX = image.getSize().x;
+		int texSizeY = image.getSize().y;
+		unsigned char * texData = (unsigned char*)image.getPixelsPtr();
+
+		glBindTexture(GL_TEXTURE_2D, wnTexture[0]);
+
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texSizeX, texSizeY, 0, GL_RGBA,
+			GL_UNSIGNED_BYTE, texData);
+		bool  mipmapEnabled = true;
+		if (mipmapEnabled)
+		{
+			//mip mapping, upload 0 level, then build maps
+			glGenerateMipmap(GL_TEXTURE_2D);
+		}
+		else
+		{
+			//no mip mapping, upload 0 level only
+		}
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+	//king stuff
 private:
 	bool initialized;
 	GLuint shaderProg[4];
@@ -424,7 +470,10 @@ private:
 	GLuint shadowRenderBufferOne;
 	GLuint shadowRenderBufferTwo;
 	GLuint shadowRenderBufferThree;
+	//King stuff start
+	GLuint wnTexture[1];
 
+	//King stuff end
 	//GLuint shadowFrameBuffers[ARRAY_SIZE];
 	//GLuint shadowRenderTextures[ARRAY_SIZE];
 	//GLuint shadowRenderBuffers[ARRAY_SIZE];
