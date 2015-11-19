@@ -38,7 +38,7 @@ public:
 		//glEnable(GL_CULL_FACE);
 		
 		setupShader();
-		//setupBuffers(state.getModel());
+		setupBuffers(state.getModel(0));
 	}
 
 	void display(WorldState & state)
@@ -194,7 +194,7 @@ public:
 
 		sid = 0;
 
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -211,6 +211,30 @@ public:
 
 		glUseProgram(0);
 		checkGLError("model");
+
+		//default framebuffer
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		//clear the old frame
+		glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		sid = 3;
+		glUseProgram(shaderProg[sid]);
+		uploadUniforms(shaderProg[sid], state, 0, 0);
+
+		//activate the rendered texture
+		texId = 4;
+		glActiveTexture(GL_TEXTURE0+texId);
+		glBindTexture(GL_TEXTURE_2D, renderTexture);
+//		glBindTexture(GL_TEXTURE_RECTANGLE, renderTexture);
+		glUniform1i( glGetUniformLocation(shaderProg[sid], "texId"), texId);
+
+		//draw a quad that fills the entire view
+		glBindVertexArray(quadVertexArray);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		glBindVertexArray(0);
+		glUseProgram(0);
+		checkGLError("render texture");
 	}
 	void buildRenderBuffers(size_t xSize, size_t ySize)
 	{
@@ -440,7 +464,26 @@ private:
 	void setupBuffers(Model & model)
 	{
 
+		static const GLfloat quadVertexData[] = {
+			-1.0f, -1.0f, 0.0f,
+			 1.0f, -1.0f, 0.0f,
+			 1.0f,  1.0f, 0.0f,
+			-1.0f, -1.0f, 0.0f,
+			 1.0f,  1.0f, 0.0f,
+			-1.0f,  1.0f, 0.0f,
+		};
+		
+		glGenVertexArrays(1, &quadVertexArray);
+		glBindVertexArray(quadVertexArray);
+		GLuint quadVertexBuffer;
+		glGenBuffers(1, &quadVertexBuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, quadVertexBuffer);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertexData), quadVertexData, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(glGetAttribLocation(shaderProg[2], "pos"));
+		glVertexAttribPointer(glGetAttribLocation(shaderProg[2], "pos"), 3, GL_FLOAT, GL_FALSE, 0, 0);
+		
 
+		glBindVertexArray(0);
 
 		checkGLError("setup");
 	}
