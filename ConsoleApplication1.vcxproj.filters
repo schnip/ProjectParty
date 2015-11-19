@@ -82,4 +82,9 @@
       <Filter>resources</Filter>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\colorful.jpg" />
+    <Image Include="resources\whitenoise.png" />
+    <Image Include="resources\checkerboard.png" />
+  </ItemGroup>
 </Project>

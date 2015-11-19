@@ -226,21 +226,21 @@ public:
 				lightIntensities[0] = currentPallet[0];
 				lightIntensities[1] = currentPallet[1];
 				lightIntensities[2] = currentPallet[2];
-				lightIntensities[3] = currentPallet[3];
+				//lightIntensities[3] = currentPallet[3];
 			}
 			else if (lightStatus == 1) {
 				lightStatus++;
 				lightIntensities[0] = currentPallet[1];
 				lightIntensities[1] = currentPallet[2];
 				lightIntensities[2] = currentPallet[0];
-				lightIntensities[3] = currentPallet[3];
+				//lightIntensities[3] = currentPallet[3];
 			}
 			else if (lightStatus == 2) {
 				lightStatus = 0;
 				lightIntensities[0] = currentPallet[2];
 				lightIntensities[1] = currentPallet[0];
 				lightIntensities[2] = currentPallet[1];
-				lightIntensities[3] = currentPallet[3];
+				//lightIntensities[3] = currentPallet[3];
 			}
 		}
 

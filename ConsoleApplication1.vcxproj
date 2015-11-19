@@ -49,6 +49,11 @@
     <None Include="resources\texture.frag" />
     <None Include="resources\texture.vert" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\checkerboard.png" />
+    <Image Include="resources\colorful.jpg" />
+    <Image Include="resources\whitenoise.png" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{456EBE0A-BEC3-40EB-8631-3C63995AADE5}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -145,7 +150,7 @@ xcopy /Y $(SolutionDir)..\Shaders $(SolutionDir)\Shaders\
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>sfml-audio-d.lib;sfml-window.lib;sfml-system.lib;opengl32.lib;winmm.lib;gdi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sfml-graphics-d.lib;sfml-audio-d.lib;sfml-window.lib;sfml-system.lib;opengl32.lib;winmm.lib;gdi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
       <Command>

@@ -31,6 +31,7 @@ uniform mat4 Lrs[ARRAY_SIZE];
 
 layout(location = 0) in vec3 pos;
 layout(location = 1) in vec3 colorIn;
+layout(location = 2) in vec2 texCoord;
 
 out vec3 smoothPos;
 out vec3 smoothNorm;
@@ -38,6 +39,7 @@ out vec4 smoothColor;
 out vec4 shadowPosOne;
 out vec4 shadowPosTwo;
 out vec4 shadowPosThree;
+out vec2 texMapping;
 
 vec4 positionInLightView(vec3 pos, mat4 LLvv)//LLVV is a standin for Lv names are hard
 {
@@ -55,9 +57,17 @@ vec4 positionInLightView(vec3 pos, mat4 LLvv)//LLVV is a standin for Lv names ar
 	return vertPos;
 }
 
+float weirdRandomThing(vec2 co) {
+	return fract(sin(dot(co, vec2(12.9898, 4.1414))) * 43758.5453);
+}
+
 void main()
 {
 	smoothPos = pos;
+	float a = clamp(weirdRandomThing(pos.xy),0,1);
+	float b = clamp(weirdRandomThing(pos.xy + vec2(0.1f)),0,1);
+	texMapping = vec2(a,b);
+	//texMapping = (noise2(pos.xy) + 1) / 2;
 	smoothNorm = colorIn*2 - 1;
 	smoothColor = vec4(colorIn, 1);
 	shadowPosOne = positionInLightView(pos,LvOne);

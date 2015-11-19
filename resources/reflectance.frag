@@ -28,7 +28,9 @@ uniform vec4 camPos;      //camera position
 uniform sampler2D texIdOne;
 uniform sampler2D texIdTwo;
 uniform sampler2D texIdThree;
+uniform sampler2D wnTexId;
 
+in vec2 texMapping;
 in vec4 smoothColor;
 in vec3 smoothPos;
 in vec3 smoothNorm;
@@ -125,6 +127,9 @@ float getVisibility(sampler2D texId,vec4 shadowPos)
 
 void main()
 {
+	
+	vec4 texColor = texture(wnTexId, texMapping);
+	
 	float visibilityFactorOne = getVisibility(texIdOne, shadowPosOne);
 	float visibilityFactorTwo = getVisibility(texIdTwo, shadowPosTwo);
 	float visibilityFactorThree = getVisibility(texIdThree, shadowPosThree);
@@ -132,9 +137,9 @@ void main()
 	float visibilityFactor = (visibilityFactorOne + visibilityFactorTwo + visibilityFactorThree)/3;
 	
 	vec3 gray = vec3(1,1,1);
-	vec4 reflectanceOne = reflectance(smoothPos, smoothNorm, gray, visibilityFactorOne, lightPosOne, LrOne, LiOne);//smoothColor.xyz
-	vec4 reflectanceTwo = reflectance(smoothPos, smoothNorm, gray, visibilityFactorTwo, lightPosTwo, LrTwo,LiTwo);
-	vec4 reflectanceThree = reflectance(smoothPos, smoothNorm, gray, visibilityFactorThree, lightPosThree, LrThree,LiThree);
+	vec4 reflectanceOne = reflectance(smoothPos, smoothNorm, texColor.xyz, visibilityFactorOne, lightPosOne, LrOne, LiOne);//smoothColor.xyz
+	vec4 reflectanceTwo = reflectance(smoothPos, smoothNorm, texColor.xyz, visibilityFactorTwo, lightPosTwo, LrTwo, LiTwo);
+	vec4 reflectanceThree = reflectance(smoothPos, smoothNorm, texColor.xyz, visibilityFactorThree, lightPosThree, LrThree, LiThree);
 
 
 	fragColor = (reflectanceOne + reflectanceTwo + reflectanceThree)/3;
