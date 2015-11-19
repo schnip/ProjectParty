@@ -581,6 +581,11 @@ private:
 		glUniform4fv(glGetUniformLocation(shaderId, "LiOne"), 1, &LiOne[0]);
 		glUniform4fv(glGetUniformLocation(shaderId, "LiTwo"), 1, &LiTwo[0]);
 		glUniform4fv(glGetUniformLocation(shaderId, "LiThree"), 1, &LiThree[0]);
+		if (state.blur) {
+			glUniform1i(glGetUniformLocation(shaderId, "isBlur"), 1);
+		} else {
+			glUniform1i(glGetUniformLocation(shaderId, "isBlur"), 0);
+		}
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

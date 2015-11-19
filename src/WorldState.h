@@ -54,6 +54,7 @@ public:
 	
 	bool lightRotating;
 	bool modelRotating;
+	bool blur;
 
 	float cursorScrollAmount;
 	float center[3];
@@ -170,6 +171,7 @@ public:
 
 		lightRotating = false;
 		modelRotating = false;
+		blur = false;
 	}
 	
 	void updateFrameTime(float timeAsSeconds)
@@ -322,6 +324,9 @@ public:
 	
 	void toggleLightRotate()
 	{ lightRotating = !lightRotating; }
+
+	void toggleBlur()
+	{ blur = !blur; }
 	
 	void zoomCamera(int delta)
 	{

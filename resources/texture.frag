@@ -17,6 +17,7 @@ uniform vec2 cursorDragAmount;    //tracks amount of x,y change while the mouse 
 uniform vec2 lastClickPos;        //where the last mouse click happened
 uniform vec2 lastFrameDragPos;    //where the cursor was on the previous frame while the mouse button is down
 uniform int  mouseButtonDown;     //tracks if the mouse button is down
+uniform int isBlur;
 
 uniform vec3 modelCenter; //center of the model (might be useful for rotations)
 uniform vec3 lookAtPos;   //point in 3D space the camera is point towards
@@ -63,5 +64,9 @@ void main()
 	vec2 texCoord = fragCoord/res;
 	fragColor = vec4(texCoord, 1, 1);
 
-	fragColor = blur();
+	if (isBlur>0) {
+		fragColor = blur();
+	} else {
+		fragColor = texture(texId, texCoord);
+	}
 }
